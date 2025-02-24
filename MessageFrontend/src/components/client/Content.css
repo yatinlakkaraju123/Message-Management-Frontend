@@ -1,0 +1,32 @@
+body{
+    background-color: #f0f8ff;
+}
+.content{
+    padding: 6px;
+}
+.title{
+    color: #4A8CBF;
+}
+.AllMessageButton{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+.Card2Buttons{
+   margin: 5px;
+}
+.Card2ButtonGroup{
+    display: flex;
+    justify-content:end;
+}
+.select{
+    width: 35%;
+    height: 30px;
+}
+.card2{
+    margin: 15px;
+}
+.TableContainer {
+    margin-left: 0 !important; /* Align table to the left */
+    width: 100%; /* Ensure it takes full width */
+}

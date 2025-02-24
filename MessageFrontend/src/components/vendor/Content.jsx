@@ -42,7 +42,7 @@ const Content = () => {
       {/* Message Section */}
       <WhiteBox>
         <FlexEndBox mb={2}>
-          <CustomButton>All Messages</CustomButton>
+          <Button>All Messages</Button>
         </FlexEndBox>
 
         <Box mb={3}>
@@ -68,7 +68,7 @@ const Content = () => {
             <Select variant="outlined" fullWidth>
               <MenuItem value="">Select</MenuItem>
             </Select>
-            <CustomButton>Search</CustomButton>
+            <Button>Search</Button>
           </Box>
         </Box>
       </WhiteBox>
@@ -96,8 +96,8 @@ const Content = () => {
 
       {/* Action Buttons */}
       <FlexEndBox>
-        <CustomButton sx={{ marginRight: 2 }}>Submit</CustomButton>
-        <CustomButton>Close</CustomButton>
+        <Button sx={{ marginRight: 2 }}>Submit</Button>
+        <Button>Close</Button>
       </FlexEndBox>
     </CustomContainer>
   );
