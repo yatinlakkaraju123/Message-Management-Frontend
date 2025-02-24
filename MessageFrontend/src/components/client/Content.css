@@ -23,9 +23,8 @@ body{
     width: 35%;
     height: 30px;
 }
-.card2{
-    margin: 15px;
-}
+
+
 .TableContainer {
     margin-left: 0 !important; /* Align table to the left */
     width: 100%; /* Ensure it takes full width */

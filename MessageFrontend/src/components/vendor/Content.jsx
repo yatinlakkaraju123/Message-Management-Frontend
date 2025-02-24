@@ -7,6 +7,8 @@ const CustomContainer = styled(Container)(({ theme }) => ({
   backgroundColor: '#f0f8ff',
   padding: theme.spacing(4),
   borderRadius: theme.shape.borderRadius,
+  width: '100%',
+  maxWidth: '100% !important',
 }));
 
 const WhiteBox = styled(Box)(({ theme }) => ({
@@ -15,6 +17,8 @@ const WhiteBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[1],
   marginBottom: theme.spacing(3),
+  width: '100%',
+  maxWidth: '100% !important',
 }));
 
 const CustomButton = styled(Button)(({ theme }) => ({
@@ -32,7 +36,7 @@ const FlexEndBox = styled(Box)({
 
 const Content = () => {
   return (
-    <CustomContainer maxWidth="md">
+    <CustomContainer >
       <Box mb={4}>
         <Typography variant="h4" sx={{ color: '#007bff' }}>
           Send Message
@@ -71,10 +75,7 @@ const Content = () => {
             <Button>Search</Button>
           </Box>
         </Box>
-      </WhiteBox>
-
-      {/* Selected Suppliers Section */}
-      <WhiteBox>
+     
         <Typography variant="h6" sx={{ color: '#007bff' }} gutterBottom>
           Selected Suppliers
         </Typography>
