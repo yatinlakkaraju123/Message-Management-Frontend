@@ -46,6 +46,8 @@ function Content() {
                 <h3>Message</h3>
                 <textarea id="w3review" name="w3review" rows="3.5" cols="215">
                 </textarea>
+                <h3>Upload Documents</h3>
+                <input type='file' accept="application/vnd.ms-excel,application/pdf"/>
                 <h2 className='title'> Choose Suppliers</h2>
                 <h3>Category</h3>
                 <Select
