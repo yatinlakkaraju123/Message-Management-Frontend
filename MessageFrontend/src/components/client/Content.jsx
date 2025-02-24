@@ -15,6 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router-dom';
+import { modules } from '../utils/ModuleList';
 
 function Content() {
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ function Content() {
 
       <h3>Message</h3>
       <textarea id="message" name="message" rows="3.5" cols="215" placeholder="Type your message here..."></textarea>
+      <h3>Document Uploads</h3>
+      <input type='file' accept='application/pdf,application/vnd.ms-excel'/>
 
       <h2 className='title'>Choose Suppliers</h2>
       <h3>Category</h3>
@@ -69,7 +72,31 @@ function Content() {
         <MenuItem value="Supplier1">Supplier1</MenuItem>
         <MenuItem value="Supplier2">Supplier2</MenuItem>
       </Select>
+      <h3>Module</h3>
+      <Select
+        variant="outlined"
+        displayEmpty
+        sx={{ width: '900px', height: '40px', fontSize: '14px' }}
+        renderValue={(selected) => selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Modules</span>}
+      >
+        <MenuItem value="" disabled>Modules</MenuItem>
+        {modules && modules.map((item,index)=>(
+                  <MenuItem value={item} key={index}>{item}</MenuItem>
 
+        ))}
+        
+      </Select>
+      <h3>Transaction ID</h3>
+      <Select
+        variant="outlined"
+        displayEmpty
+        sx={{ width: '900px', height: '40px', fontSize: '14px' }}
+        renderValue={(selected) => selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Transaction ID</span>}
+      >
+        <MenuItem value="" disabled>Transaction ID</MenuItem>
+        <MenuItem value="Supplier1">Supplier1</MenuItem>
+        <MenuItem value="Supplier2">Supplier2</MenuItem>
+      </Select>
       <div className='AllMessageButton'>
         <Button variant="contained">Search</Button>
       </div>
@@ -129,7 +156,7 @@ function Content() {
       </Box>
 
       <div className='Card2ButtonGroup'>
-        <Button variant="contained" className='Card2Buttons'>Submit</Button>
+        <Button variant="contained" className='Card2Buttons'>Send</Button>
         <Button variant="contained" className='Card2Buttons'>Close</Button>
       </div>
     </div>
