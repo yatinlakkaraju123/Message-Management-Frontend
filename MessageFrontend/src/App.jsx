@@ -2,20 +2,24 @@
 
 import './App.css'
 import '@fontsource/roboto/300.css';
-import Content from './components/client/Content'
-import Navbar from './components/vendor/Navbar'
-import ViewMessages from './components/client/ViewMessages';
+import Content from './components/client/Content';
+import { Route, Routes } from 'react-router-dom';
+import Navbar from './components/vendor/Navbar';
 import MessageStatus from './components/client/MessageStatus';
+import ViewMessages from './components/client/ViewMessages';
 
 function App() {
-
   return (
     <>
- <Navbar />
- {/* <Content/> */}
-    <Content/>
+<Navbar/>
+<Routes>
+<Route path='/' element={<Content />}></Route>
+<Route path='/status' element={<MessageStatus />}></Route>
+<Route path='/view' element={<ViewMessages />}></Route>
+</Routes>
     </>
   )
 }
+
 
 export default App
