@@ -95,7 +95,7 @@ function Content() {
     return (
         <div className='content'>
             <h1 className='title'>Send Message</h1>
-            <Box sx={{ minWidth: 275 }}>
+            <Box sx={{ minWidth: 275 }} className="card1">
                 <Card variant="outlined">{card}</Card>
             </Box>
             <br/>

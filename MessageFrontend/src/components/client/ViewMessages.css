@@ -1,0 +1,12 @@
+.search{
+    display: flex;
+    margin-left: auto;
+    height:25px;
+    
+}
+.Card2Buttons{
+    display: flex;
+margin-left: 100%;}
+.content{
+    padding: 6px;
+}
