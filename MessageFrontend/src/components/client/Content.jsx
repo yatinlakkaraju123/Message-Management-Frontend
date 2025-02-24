@@ -17,6 +17,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 
+
 function Content() {
     const bull = (
         <Box
@@ -47,17 +48,28 @@ function Content() {
                 </textarea>
                 <h2 className='title'> Choose Suppliers</h2>
                 <h3>Category</h3>
-                <Select className='select'
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                <Select
+  variant="outlined"
+  displayEmpty
+  sx={{
+    width: '900px', // Adjust width here
+    height: '40px', // Adjust height here
+    fontSize: '14px', // Optional: to make text smaller
+  }}
+  renderValue={(selected) => {
+    if (!selected) {
+      return <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Category</span>;
+    }
+    return selected;
+  }}
+>
+  <MenuItem value="" disabled>
+    Category
+  </MenuItem>
+  <MenuItem value="Supplier1">Supplier1</MenuItem>
+  <MenuItem value="Supplier2">Supplier2</MenuItem>
+</Select>
 
-                    label="Age"
-
-                >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
                 <div className='AllMessageButton'>      <Button variant="contained">
                     Search
                 </Button></div>
