@@ -16,9 +16,11 @@ body{
    margin: 5px;
    
 }
-.Card2ButtonGroup{
+.Card2ButtonGroup {
     display: flex;
-    justify-content:flex-end;
+    justify-content: flex-end; 
+    gap: 15px;
+
 }
 .select{
     width: 35%;
