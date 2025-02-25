@@ -6,7 +6,14 @@
 }
 .Card2Buttons{
     display: flex;
-margin-left: 100%;}
+margin-left: 100%;
+margin: 5px;}
 .content{
     padding: 6px;
+}
+#inboxButton{
+    margin: 5px;
+}
+#sentButton{
+    margin: 5px;
 }

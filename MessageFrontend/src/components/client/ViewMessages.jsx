@@ -12,7 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import './ViewMessages.css';
-
+import { Link } from 'react-router-dom';
 function ViewMessages() {
   const navigate = useNavigate();
 
@@ -26,10 +26,16 @@ function ViewMessages() {
         <h2 className='title'>My Messages</h2>
         <br />
         <input type='text' className='search' placeholder='Search' />
+        <Button variant="contained" className='Card2Buttons' id="inboxButton">
+          Inbox
+        </Button>
+        <Button variant="contained" className='Card2Buttons'  id="sentButton">
+          Sent
+        </Button>
         <TableContainer component={Paper} className='TableContainer'>
           <Table sx={{ minWidth: 350 }} aria-label="simple table">
             <TableHead>
-              <TableRow>
+             <TableRow>
                 <TableCell align="left">From</TableCell>
                 <TableCell align="left">Date</TableCell>
                 <TableCell align="left">Message</TableCell>
