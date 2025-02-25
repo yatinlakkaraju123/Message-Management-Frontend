@@ -2,7 +2,6 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -14,9 +13,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import './Content.css';
+import './VendorStatus.css';
 
-function MessageStatus() {
+function VendorStatus() {
     const rows = [
         { companyName: 'DONGGUAN WEICHENG AUTOMATION', date: 'NA', status: 'Not Replied', message: 'NA' },
         { companyName: '9301 plant', date: 'NA', status: 'Not Replied', message: 'NA' },
@@ -27,14 +26,15 @@ function MessageStatus() {
     return (
         <div className='content'>
 
-            <Box sx={{ minWidth: 275 }}>
+            {/* Message Card */}
+            <Box sx={{ minWidth: 275, marginBottom: 2 }}>
                 <Card variant="outlined">
                     <CardContent>
                         <Typography variant="h6" gutterBottom>Message</Typography>
                         <TextField
                             fullWidth
                             multiline
-                            rows={4}
+                            rows={6} // Increased height
                             variant="outlined"
                             defaultValue="Hi"
                         />
@@ -42,21 +42,19 @@ function MessageStatus() {
                 </Card>
             </Box>
 
-            <br/>
-
+            {/* Replies Card */}
             <Card variant="outlined">
                 <CardContent>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <Typography variant="h6">Replies</Typography>
-        
                         <TextField
                             size="small"
                             variant="outlined"
                             placeholder="Search"
                         />
                     </div>
-                    <TableContainer component={Paper} className='TableContainer'>
-                        <Table sx={{ width: '100%' }} aria-label="simple table">
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Company Name</TableCell>
@@ -79,13 +77,14 @@ function MessageStatus() {
                     </TableContainer>
                 </CardContent>
             </Card>
-            <br/>
 
-            <div className='Card2ButtonGroup'>
-                <div className='Card2Buttons'><Button variant="contained" color="primary">Back</Button></div>
+            {/* Buttons aligned to the right */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '1rem' }}>
+                <Button variant="contained" color="primary">Back</Button>
+                <Button variant="contained" color="secondary">Submit</Button>
             </div>
         </div>
     );
 }
 
-export default MessageStatus;
+export default VendorStatus;
