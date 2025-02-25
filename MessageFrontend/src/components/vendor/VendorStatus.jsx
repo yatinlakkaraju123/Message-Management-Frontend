@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -16,12 +16,17 @@ import TextField from '@mui/material/TextField';
 import './VendorStatus.css';
 
 function VendorStatus() {
+    const navigate = useNavigate(); // Hook for navigation
     const rows = [
         { companyName: 'DONGGUAN WEICHENG AUTOMATION', date: 'NA', status: 'Not Replied', message: 'NA' },
         { companyName: '9301 plant', date: 'NA', status: 'Not Replied', message: 'NA' },
         { companyName: 'BACTIVE DIGITAL SOLUTIONS', date: 'NA', status: 'Not Replied', message: 'NA' },
         { companyName: 'AUTOCOMP', date: 'NA', status: 'Not Replied', message: 'NA' },
     ];
+    const handleBack = () => {
+        navigate('/view'); // Navigates to the home route
+    };
+
 
     return (
         <div className='content'>
@@ -80,7 +85,7 @@ function VendorStatus() {
 
             {/* Buttons aligned to the right */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '1rem' }}>
-                <Button variant="contained" color="primary">Back</Button>
+            <Button variant="contained" color="primary" onClick={handleBack}>Back</Button>
                 <Button variant="contained" color="secondary">Submit</Button>
             </div>
         </div>
