@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { modules } from '../utils/ModuleList';
 
 function Content() {
+
   const navigate = useNavigate();
   
   const [selectedRows, setSelectedRows] = useState([]);
@@ -142,6 +143,7 @@ function Content() {
   );
 
   return (
+    <>
     <div className='content'>
       <h1 className='title'>Send Message</h1>
 
@@ -154,12 +156,16 @@ function Content() {
       <Box sx={{ minWidth: 275 }} className="card2">
         <Card variant="outlined">{card2}</Card>
       </Box>
-
+      
       <div className='Card2ButtonGroup'>
-        <Button variant="contained" className='Card2Buttons'>Send</Button>
-        <Button variant="contained" className='Card2Buttons'>Close</Button>
-      </div>
+  <Button variant="contained" className='Card2Buttons'>Send</Button>
+  <Button variant="contained" className='Card2Buttons'>Close</Button>
+</div>
+
+
+    
     </div>
+    </>
   );
 }
 
