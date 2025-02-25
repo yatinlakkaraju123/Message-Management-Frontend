@@ -131,20 +131,20 @@ function ViewMessages() {
       {/* Reply Dialog */}
       <Dialog open={open} onClose={handleCloseDialog} className='dialog' maxWidth="md">
         <DialogTitle>Reply to Message</DialogTitle>
-        <DialogContent sx={{ minWidth: '250px' }}>
+        <DialogContent sx={{ minWidth: '600px' }}>
           <p><strong>From:</strong> {selectedMessage?.from}</p>
           <p><strong>Message:</strong> {selectedMessage?.message}</p>
           <TextField
-            autoFocus
-            margin="dense"
-            label="Your Reply"
-            
-            multiline
-            rows={10}
-            
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-          />
+  autoFocus
+  margin="dense"
+  label="Your Reply"
+  multiline
+  rows={10}
+  value={replyText}
+  onChange={(e) => setReplyText(e.target.value)}
+  style={{ width: '800px' }} // Adjust the width value as needed
+/>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
