@@ -2,7 +2,7 @@
 
 import './App.css'
 import '@fontsource/roboto/300.css';
-import Content from './components/client/Content';
+import Content from './components/client/SubmitMessage';
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/vendor/Navbar';
 import MessageStatus from './components/client/MessageStatus';
