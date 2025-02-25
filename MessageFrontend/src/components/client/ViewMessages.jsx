@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -124,7 +124,7 @@ function ViewMessages() {
       <div>
         <Button variant="contained" className='Card2Buttons' id='submitButton2'>Submit</Button>
         
-        <Button variant="contained" className='Card2Buttons'>Close</Button>
+        <Link to="/"><Button variant="contained" className='Card2Buttons'>Close</Button></Link>
 
       </div>
 

@@ -15,6 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import './Content.css';
+import { Link } from 'react-router-dom';
 
 function MessageStatus() {
     const rows = [
@@ -82,7 +83,7 @@ function MessageStatus() {
             <br/>
 
             <div className='Card2ButtonGroup'>
-                <div className='Card2Buttons'><Button variant="contained" color="primary">Back</Button></div>
+               <div className='Card2Buttons'><Link to="/view"><Button variant="contained" color="primary">Back</Button></Link> </div>
             </div>
         </div>
     );
