@@ -124,7 +124,7 @@ function ViewMessages() {
       <div>
         <Button variant="contained" className='Card2Buttons' id='submitButton2'>Submit</Button>
         
-        <Button variant="contained" className='Card2Buttons'>Close</Button>
+        <Button variant="contained" className='Card2Buttons' onClick={()=>navigate("/")}>Close</Button>
 
       </div>
 
