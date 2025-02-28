@@ -255,7 +255,7 @@ function VendorView() {
         </Button>
       </div>
 
-      {/* Reply Dialog */}
+
       {/* Reply Dialog */}
       <Dialog open={open} onClose={handleCloseDialog} className='dialog' maxWidth="md">
         <DialogTitle>

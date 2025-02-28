@@ -101,7 +101,7 @@ function VendorStatus() {
             </Card>
 
             <div className='Card2ButtonGroup'>
-      
+     
         <Button
           variant="outlined"
           style={{
@@ -121,6 +121,7 @@ function VendorStatus() {
             borderWidth: '2px',
             borderStyle: 'solid',
             backgroundColor: '#ffffff',
+            marginTop: '2rem',
           }}
           onClick={() => navigate('/vendorview')}
         >
