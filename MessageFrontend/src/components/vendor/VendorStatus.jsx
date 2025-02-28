@@ -122,6 +122,7 @@ function VendorStatus() {
             borderStyle: 'solid',
             backgroundColor: '#ffffff',
           }}
+          onClick={() => navigate('/vendorview')}
         >
           Back
         </Button>

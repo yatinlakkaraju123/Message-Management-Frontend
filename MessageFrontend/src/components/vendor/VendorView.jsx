@@ -31,7 +31,7 @@ function VendorView() {
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   const handleCellClick = () => {
-    navigate('/status');
+    navigate('/vendorstatus');
   };
 
   // Open the modal with selected message
@@ -249,8 +249,9 @@ function VendorView() {
             borderStyle: 'solid',
             backgroundColor: '#ffffff',
           }}
-        >
-          Close
+          onClick={() => navigate('/vendorhome')}
+        > 
+          Close 
         </Button>
       </div>
 
