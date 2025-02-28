@@ -27,7 +27,8 @@ function MessageStatus() {
     ];
 
     const handleBack = () => {
-        navigate('/view'); // Navigates to the home route
+        console.log("in handle")
+        navigate('/ClientHome'); // Navigates to the home route
     };
 
     return (
@@ -54,14 +55,32 @@ function MessageStatus() {
                 <CardContent>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h6">Replies</Typography>
-                        <TextField
-                            size="small"
-                            variant="outlined"
-                            placeholder="Search"
-                        />
-                            <SearchIcon sx={{ color: '#A0A4A8', cursor: 'pointer' }} />
+                        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '250px',
+            height: '25px',
+            borderRadius: '8px',
+            border: '1px solid #D2E0E6',
+            padding: '8px 12px',
+            backgroundColor: '#FFFFFF',
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          <TextField
+            size="small"
+            variant="standard"
+            placeholder="Search"
+            InputProps={{ disableUnderline: true }}
+            fullWidth
+            sx={{ fontFamily: 'Poppins, sans-serif' }}
+          />
+          <SearchIcon sx={{ color: '#A0A4A8', cursor: 'pointer' }} />
+        </div>
 
                     </div>
+                    <br/>
                     <TableContainer component={Paper} className='TableContainer'
                             sx={{ borderRadius: '12px', overflow: 'hidden' }}
 
@@ -96,7 +115,29 @@ function MessageStatus() {
             <br/>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <Button variant="container"  onClick={handleBack} id='BackButton'>Back</Button>
+                <Link to="/view"><Button
+          variant="outlined"
+          style={{
+            width: '120px',
+            height: '48px',
+            borderRadius: '12px',
+            padding: '12px 32px',
+            fontFamily: 'Poppins, sans-serif',
+            fontWeight: 500,
+            fontSize: '16px',
+            lineHeight: '24px',
+            letterSpacing: '0',
+            textAlign: 'center',
+            textTransform: 'none',
+            color: '#012954',
+            borderColor: '#012954',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          Back
+        </Button></Link>
             </div>
         </div>
     );

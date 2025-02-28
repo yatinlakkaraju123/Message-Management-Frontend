@@ -17,7 +17,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { modules } from '../utils/ClientModules';
 
 function ClientHome() {
@@ -99,7 +99,7 @@ function ClientHome() {
   const card = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className='AllMessageButton'>
-        <Button variant="contained">All Messages</Button>
+        <Link to="/view"><Button variant="contained">All Messages</Button></Link>
       </div>
 
       {/* Message Title */}
@@ -334,7 +334,7 @@ function ClientHome() {
           variant="contained"
           sx={{ fontFamily: 'Poppins, sans-serif' }}
         >
-          Send
+          Submit
         </Button>
         <Button
           variant="outlined"
@@ -357,7 +357,7 @@ function ClientHome() {
             backgroundColor: '#ffffff',
           }}
         >
-          Cancel
+          Back
         </Button>
       </div>
     </CardContent>

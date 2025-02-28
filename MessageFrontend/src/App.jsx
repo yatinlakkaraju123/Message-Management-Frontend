@@ -10,6 +10,7 @@ import VendorStatus from './components/vendor/VendorStatus';
 import VendorView from './components/vendor/VendorView';
 import VendorHome from './components/vendor/VendorHome';
 import ClientHome from './components/client/ClientHome';
+import MessageStatus from './components/client/MessageStatus';
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
 
 <Route path='/VendorHome' element={<VendorHome/>}></Route>
 <Route path='/ClientHome' element={<ClientHome />}></Route>
-      <Route path='/status' element={<VendorStatus />}></Route>
+      <Route path='/status' element={<MessageStatus />}></Route>
       <Route path='/view' element={<ViewMessages />}></Route>
       <Route path='/vendorstatus' element={<VendorStatus/>}/>
       <Route path='/vendorview' element={<VendorView/>}/>
