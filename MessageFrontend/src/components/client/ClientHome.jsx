@@ -52,11 +52,11 @@ function ClientHome() {
   const card = (
     <CardContent>
       <div className='AllMessageButton'>
-        <Button variant="contained" onClick={() => navigate('/view')}>
+        <Button variant="contained" onClick={() => navigate('/view')} id="AllMessageButton" className='Buttons'>
           All Messages
         </Button>
       </div>
-
+      <form className='SubmitForm'>
       <h3>Message</h3>
       <textarea id="message" name="message" rows="3.5" cols="215" placeholder="Type your message here..."></textarea>
       <h3>Document Uploads</h3>
@@ -99,8 +99,9 @@ function ClientHome() {
         <MenuItem value="Supplier1">Supplier1</MenuItem>
         <MenuItem value="Supplier2">Supplier2</MenuItem>
       </Select>
+      </form>
       <div className='AllMessageButton'>
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" className='Buttons' id='searchButton'>Search</Button>
       </div>
     </CardContent>
   );
@@ -110,7 +111,7 @@ function ClientHome() {
       <h2 className='title'>Selected Suppliers</h2>
       <TableContainer component={Paper} className='TableContainer'>
         <Table sx={{ minWidth: 350 }} aria-label="supplier table">
-          <TableHead>
+          <TableHead className='TableHead'>
             <TableRow>
               <TableCell align="left">
                 <Checkbox checked={selectAll} onChange={handleSelectAll} />
@@ -122,7 +123,7 @@ function ClientHome() {
               <TableCell align="left">Contact</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className='TableBody'>
             {dummyData.map((supplier) => (
               <TableRow key={supplier.id}>
                 <TableCell align="left">
@@ -149,13 +150,13 @@ function ClientHome() {
       <h1 className='title'>Send Message</h1>
 
       <Box sx={{ minWidth: 275 }} className="card1">
-        <Card variant="outlined">{card}</Card>
+        <Card variant="outlined" id="card1">{card}</Card>
       </Box>
 
       <br/>
 
       <Box sx={{ minWidth: 275 }} className="card2">
-        <Card variant="outlined">{card2}</Card>
+        <Card variant="outlined" id="card2">{card2}</Card>
       </Box>
       
       <div className='Card2ButtonGroup'>

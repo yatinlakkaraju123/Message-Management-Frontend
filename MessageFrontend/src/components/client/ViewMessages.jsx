@@ -124,7 +124,7 @@ function ViewMessages() {
       <div>
         <Button variant="contained" className='Card2Buttons' id='submitButton2'>Submit</Button>
         
-        <Link to="/"><Button variant="contained" className='Card2Buttons'>Close</Button></Link>
+        <Link to="/ClientHome"><Button variant="contained" className='Card2Buttons'>Close</Button></Link>
 
       </div>
 
