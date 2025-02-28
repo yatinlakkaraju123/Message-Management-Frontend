@@ -127,3 +127,7 @@ background-color: #012954;
     transition: background-color 0.3s ease;
     text-transform: none;
 }
+.Card2Buttons{
+    display: flex;
+margin-left: 100%;
+margin: 5px;}

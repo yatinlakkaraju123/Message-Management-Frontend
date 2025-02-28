@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
+
 import {
   Box,
   Card,
@@ -11,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   Paper,
   Button,
   TextField,
@@ -57,10 +60,36 @@ function ViewMessages() {
         <Card variant="outlined">
           <CardContent>
             <h2 className='title'>My Messages</h2>
-            <br />
-            <input type='text' className='search' placeholder='Search'  />
+            <br/>
+          
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div className='AllMessageButton'>
             <Button variant="contained" id="inboxButton">Inbox</Button>
             <Button variant="contained" id="sentButton">Sent</Button>
+            </div>
+            <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      width: '250px',
+      height: '25px',
+      borderRadius: '8px',
+      border: '1px solid #D2E0E6',
+      padding: '8px 12px',
+      backgroundColor: '#FFFFFF',
+      fontFamily: 'Poppins, sans-serif',
+    }}
+  >
+    <TextField
+      size="small"
+      variant="standard"
+      placeholder="Search"
+      InputProps={{ disableUnderline: true }}
+      fullWidth
+      sx={{ fontFamily: 'Poppins, sans-serif' }}
+    />
+    <SearchIcon sx={{ color: '#A0A4A8', cursor: 'pointer' }} /></div>
+    </div>
             <TableContainer component={Paper} className='TableContainer'  
             sx={{ borderRadius: '12px', overflow: 'hidden' }}>
               <Table sx={{ minWidth: 350 }} aria-label="simple table">
@@ -130,33 +159,106 @@ function ViewMessages() {
       </Box>
       <br />
       <div>
-        <Button variant="contained" className='Card2Buttons' id='submitButton2'>Submit</Button>
         
-        <Link to="/ClientHome"><Button variant="contained" className='Card2Buttons' id="closeButton">Close</Button></Link>
+        <Link to="/ClientHome"> <Button
+                  variant="outlined"
+                  style={{
+                    marginLeft:'90%',
+                    width: '120px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    padding: '12px 32px',
+                    fontFamily: 'Poppins, sans-serif',
+                    fontWeight: 500,
+                    fontSize: '16px',
+                    lineHeight: '24px',
+                    letterSpacing: '0',
+                    textAlign: 'center',
+                    textTransform: 'none',
+                    color: '#012954',
+                    borderColor: '#012954',
+                    borderWidth: '2px',
+                    borderStyle: 'solid',
+                    backgroundColor: '#ffffff',
+                  }}
+                >
+                  Close
+                </Button></Link>
 
       </div>
 
       {/* Reply Dialog */}
       <Dialog open={open} onClose={handleCloseDialog} className='dialog' maxWidth="md">
-        <DialogTitle>Reply to Message</DialogTitle>
-        <DialogContent sx={{ minWidth: '600px' }}>
+        <DialogTitle>
+          <Typography variant="h4" className='title' sx={{ fontFamily: 'Poppins, sans-serif' }}>
+            Send Message
+          </Typography>
+        </DialogTitle>
+        <DialogContent sx={{ minWidth: '600px', fontFamily: 'Poppins, sans-serif' }}>
           <p><strong>From:</strong> {selectedMessage?.from}</p>
           <p><strong>Message:</strong> {selectedMessage?.message}</p>
           <TextField
-  autoFocus
-  margin="dense"
-  label="Your Reply"
-  multiline
-  rows={10}
-  value={replyText}
-  onChange={(e) => setReplyText(e.target.value)}
-  style={{ width: '800px' }} // Adjust the width value as needed
-/>
-
+            autoFocus
+            margin="dense"
+            label="Your Reply"
+            multiline
+            rows={10}
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            sx={{
+              width: '800px',
+              fontFamily: 'Poppins, sans-serif',
+              borderRadius: '8px',
+            }}
+            InputProps={{
+              style: {
+                fontFamily: 'Poppins, sans-serif',
+              },
+            }}
+          />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSendReply} variant="contained">Send</Button>
+        <DialogActions className='Card2ButtonGroup'>
+          <Button
+            variant="outlined"
+            style={{
+              width: '120px',
+              height: '48px',
+              borderRadius: '12px',
+              padding: '12px 32px',
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '24px',
+              letterSpacing: '0',
+              textAlign: 'center',
+              textTransform: 'none',
+              color: '#012954',
+              borderColor: '#012954',
+              borderWidth: '2px',
+              borderStyle: 'solid',
+              backgroundColor: '#ffffff',
+            }}
+            onClick={handleCloseDialog}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              fontFamily: 'Poppins, sans-serif',
+              backgroundColor: '#012954',
+              color: '#FFFFFF',
+              padding: '12px 32px',
+              borderRadius: '12px',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '24px',
+              textTransform: 'none',
+            }}
+            onClick={handleSendReply}
+          >
+            Send
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

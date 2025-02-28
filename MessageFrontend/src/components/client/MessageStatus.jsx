@@ -13,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import './Content.css';
+import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import "./MessageStatus.css"
 function MessageStatus() {
@@ -59,6 +59,8 @@ function MessageStatus() {
                             variant="outlined"
                             placeholder="Search"
                         />
+                            <SearchIcon sx={{ color: '#A0A4A8', cursor: 'pointer' }} />
+
                     </div>
                     <TableContainer component={Paper} className='TableContainer'
                             sx={{ borderRadius: '12px', overflow: 'hidden' }}
@@ -94,7 +96,7 @@ function MessageStatus() {
             <br/>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <Button variant="contained" color="primary" onClick={handleBack} id='BackButton'>Back</Button>
+                <Button variant="container"  onClick={handleBack} id='BackButton'>Back</Button>
             </div>
         </div>
     );
