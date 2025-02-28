@@ -2,21 +2,128 @@
     display: flex;
     margin-left: auto;
     height:25px;
+   
+    box-sizing: border-box;
+    border: 1.2px solid #BDC1CA;
+    border-radius: 4px;
+    background: #FFFFFF;
+    resize: none;
+    padding: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: #000000;
+    outline: none;
     
 }
 .Card2Buttons{
     display: flex;
 margin-left: 100%;
-margin: 5px;}
+margin: 5px;
+background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
+}
 .content{
     padding: 6px;
 }
 #inboxButton{
     margin: 5px;
+    background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
 }
 #sentButton{
     margin: 5px;
+    background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
 }
 #submitButton2{
     margin: 10px;
+    background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
+}
+#closeButton{
+    margin: 10px;
+    background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
 }

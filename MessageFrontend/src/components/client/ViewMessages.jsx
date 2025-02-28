@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -57,19 +58,24 @@ function ViewMessages() {
           <CardContent>
             <h2 className='title'>My Messages</h2>
             <br />
-            <input type='text' className='search' placeholder='Search' />
+            <input type='text' className='search' placeholder='Search'  />
             <Button variant="contained" id="inboxButton">Inbox</Button>
             <Button variant="contained" id="sentButton">Sent</Button>
-            <TableContainer component={Paper} className='TableContainer'>
+            <TableContainer component={Paper} className='TableContainer'  
+            sx={{ borderRadius: '12px', overflow: 'hidden' }}>
               <Table sx={{ minWidth: 350 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left">From</TableCell>
-                    <TableCell align="left">Date</TableCell>
-                    <TableCell align="left">Message</TableCell>
-                    <TableCell align="left">Sent To</TableCell>
-                    <TableCell align="left">Replies</TableCell>
-                    <TableCell align="left">Actions</TableCell>
+                <TableHead
+                
+                >
+                  <TableRow
+                  sx={{ borderTop: '1px solid #BFE7FE', backgroundColor: '#BFE7FE' }}
+                  >
+                    <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>From</TableCell>
+                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Date</TableCell>
+                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Message</TableCell>
+                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Sent To</TableCell>
+                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Replies</TableCell>
+                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -87,19 +93,21 @@ function ViewMessages() {
                     replies: 1
                   }].map((msg, index) => (
                     <TableRow key={index}>
-                      <TableCell align="left">{msg.from}</TableCell>
-                      <TableCell align="left">{msg.date}</TableCell>
-                      <TableCell align="left">{msg.message}</TableCell>
+                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.from}</TableCell>
+                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.date}</TableCell>
+                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.message}</TableCell>
                       <TableCell
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
                         onClick={handleCellClick}
+                        sx={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         {msg.sentTo}
                       </TableCell>
                       <TableCell
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
+                        sx={{ fontFamily: 'Poppins, sans-serif' }}
                         onClick={handleCellClick}
                       >
                         {msg.replies}
@@ -124,7 +132,7 @@ function ViewMessages() {
       <div>
         <Button variant="contained" className='Card2Buttons' id='submitButton2'>Submit</Button>
         
-        <Link to="/ClientHome"><Button variant="contained" className='Card2Buttons'>Close</Button></Link>
+        <Link to="/ClientHome"><Button variant="contained" className='Card2Buttons' id="closeButton">Close</Button></Link>
 
       </div>
 

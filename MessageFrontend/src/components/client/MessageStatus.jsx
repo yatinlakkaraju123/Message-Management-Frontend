@@ -15,7 +15,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import './Content.css';
 import { Link } from 'react-router-dom';
-
+import "./MessageStatus.css"
 function MessageStatus() {
     const navigate = useNavigate(); // Hook for navigation
 
@@ -60,23 +60,29 @@ function MessageStatus() {
                             placeholder="Search"
                         />
                     </div>
-                    <TableContainer component={Paper} className='TableContainer'>
+                    <TableContainer component={Paper} className='TableContainer'
+                            sx={{ borderRadius: '12px', overflow: 'hidden' }}
+
+                    >
                         <Table sx={{ width: '100%' }} aria-label="simple table">
                             <TableHead>
-                                <TableRow>
-                                    <TableCell>Company Name</TableCell>
-                                    <TableCell>Date</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Message</TableCell>
+                                <TableRow
+                                              sx={{ borderTop: '1px solid #BFE7FE', backgroundColor: '#BFE7FE' }}
+
+                                >
+                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Company Name</TableCell>
+                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Date</TableCell>
+                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Status</TableCell>
+                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Message</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {rows.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{row.companyName}</TableCell>
-                                        <TableCell>{row.date}</TableCell>
-                                        <TableCell>{row.status}</TableCell>
-                                        <TableCell>{row.message}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.companyName}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.date}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.status}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.message}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -88,7 +94,7 @@ function MessageStatus() {
             <br/>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-                <Button variant="contained" color="primary" onClick={handleBack}>Back</Button>
+                <Button variant="contained" color="primary" onClick={handleBack} id='BackButton'>Back</Button>
             </div>
         </div>
     );
