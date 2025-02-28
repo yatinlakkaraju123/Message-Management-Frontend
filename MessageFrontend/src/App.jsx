@@ -18,10 +18,11 @@ function App() {
 <Navbar/>
 <Routes>
 
-<Route path='/VendorHome' element={<VendorHome/>}></Route>
+
 <Route path='/ClientHome' element={<ClientHome />}></Route>
-      <Route path='/status' element={<VendorStatus />}></Route>
       <Route path='/view' element={<ViewMessages />}></Route>
+
+      <Route path='/VendorHome' element={<VendorHome/>}></Route>
       <Route path='/vendorstatus' element={<VendorStatus/>}/>
       <Route path='/vendorview' element={<VendorView/>}/>
 

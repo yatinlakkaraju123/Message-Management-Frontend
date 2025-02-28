@@ -14,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
+import { useNavigate } from 'react-router-dom';
 
 import { vendormodules } from '../utils/VendorModules';
 
@@ -21,6 +22,7 @@ function VendorHome() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [text, setText] = useState('');
+  const navigate = useNavigate();
 
   // Dummy Data
   const dummyData = [
@@ -95,7 +97,12 @@ function VendorHome() {
   const card = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className='AllMessageButton'>
-        <Button variant="contained">All Messages</Button>
+      <Button 
+      variant="contained" 
+      onClick={() => navigate('/vendorview')}
+    >
+      All Messages
+    </Button>
       </div>
 
       {/* Message Title */}
