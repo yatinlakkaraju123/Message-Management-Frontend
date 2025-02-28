@@ -1,0 +1,181 @@
+
+*{
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  
+
+body{
+    background-color: #F5F5F5;
+}
+  
+.content{
+    padding: 6px;
+}
+.title{
+    color: #202020;
+    ;
+}
+
+
+
+.AllMessageButton {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.AllMessageButton button {
+  background-color: #012954;
+  color: #FFFFFF;
+  width: auto;            /* Adjust to fit content */
+  min-width: 167px;       /* Ensures a base size */
+  height: 40px;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;     /* No extra spacing */
+  white-space: nowrap;    /* Prevents text from breaking into new lines */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: none;
+}
+
+.AllMessageButton button:hover {
+  background-color: #011d3a; /* Slightly darker on hover */
+}
+
+.Card2Buttons{
+   margin: 5px;
+   
+}
+.Card2ButtonGroup {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-top: auto;
+}
+.Card2ButtonGroup button{
+    background-color: #012954;
+    color: #FFFFFF;
+    width: auto;            /* Adjust to fit content */
+    min-width: 120px;   
+   
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;     /* No extra spacing */
+    white-space: nowrap;    /* Prevents text from breaking into new lines */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: none;
+  }
+  .Card2ButtonGroup button:hover {
+    background-color: #011d3a; /* Slightly darker on hover */
+  }
+
+.select{
+    width: 35%;
+    height: 30px;
+}
+
+
+.TableContainer {
+    margin-left: 0 !important; /* Align table to the left */
+    width: 100%; /* Ensure it takes full width */
+}
+
+/* Message Text Area Styles */
+.message-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .message-textarea {
+    width: 100%;
+    height: 80px;
+    box-sizing: border-box;
+    border: 1.2px solid #BDC1CA;
+    border-radius: 4px;
+    background: #FFFFFF;
+    resize: none;
+    padding: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: #000000;
+    outline: none;
+  }
+  
+  .message-char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 14px;
+    color: #BDC1CA;
+  }
+  
+  /* Select Field Styles */
+  .select-field {
+    width: 900px;
+    height: 40px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  /* Override MUI outlined input styles */
+  .select-field .MuiOutlinedInput-notchedOutline {
+    border: 1.2px solid #BDC1CA;
+  }
+  
+  .select-field .MuiOutlinedInput-root {
+    border-radius: 4px;
+    background-color: #FFFFFF;
+  }
+  
+  /* Cancel Button Styles */
+  .cancel-button {
+    width: 120px;
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: none;
+    color: #012954;
+    border: 2px solid #012954;
+    background-color: #ffffff;
+  }
+  
+  .title {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 24px !important;
+    line-height: 36px !important;
+    letter-spacing: 0 !important;
+  }
+  .small-title{
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    line-height: 30px !important;
+    letter-spacing: 0 !important;
+    color:  #356394;
+    
+    
+    
+  }

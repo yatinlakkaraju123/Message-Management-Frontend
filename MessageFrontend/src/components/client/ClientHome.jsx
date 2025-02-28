@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import "./Content.css";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
