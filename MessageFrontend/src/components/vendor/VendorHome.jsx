@@ -330,7 +330,7 @@ function VendorHome() {
           variant="contained"
           sx={{ fontFamily: 'Poppins, sans-serif' }}
         >
-          Send
+          Submit
         </Button>
         <Button
           variant="outlined"
@@ -353,7 +353,7 @@ function VendorHome() {
             backgroundColor: '#ffffff',
           }}
         >
-          Cancel
+          Close
         </Button>
       </div>
     </CardContent>
