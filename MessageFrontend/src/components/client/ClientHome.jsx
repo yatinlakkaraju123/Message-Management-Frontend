@@ -1,4 +1,4 @@
-import { useState,useRef } from 'react';
+import { useState,useRef, useEffect } from 'react';
 import "./Content.css";
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -19,13 +19,27 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useNavigate } from 'react-router-dom';
 import { modules } from '../utils/ClientModules';
+import { retrieveAllCategories } from '../../apis/messageClients';
 
 function ClientHome() {
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [text, setText] = useState('');
-
+  const [categories,setCategories] = useState([])
+  const fetchCategories = async ()=>{
+      try {
+        const response = await retrieveAllCategories()
+      setCategories(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+      
+  }
+  useEffect(()=>{
+    fetchCategories()
+    console.log("categories:",categories)
+  },[])
   // Dummy Data
   const dummyData = [
     { id: 1, company: 'ABC Corp', name: 'John Doe', email: 'john.doe@abc.com', contact: '123-456-7890' },
@@ -213,8 +227,10 @@ function ClientHome() {
         <MenuItem value="" disabled>
           Category
         </MenuItem>
-        <MenuItem value="Supplier1">Supplier1</MenuItem>
-        <MenuItem value="Supplier2">Supplier2</MenuItem>
+        {categories.length!=0 && categories.map((item,index)=>(
+          <MenuItem value={item}>{item}</MenuItem>
+        ))}
+        
       </Select>
 
       <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
