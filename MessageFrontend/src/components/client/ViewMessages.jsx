@@ -29,6 +29,7 @@ import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import './ViewMessages.css';
 import { createReply, downloadFile, retrieveMessageInboxViews, retrieveMessagesViews, updateFile } from '../../apis/messageClients';
 import { useRef } from 'react';
+import ClientNavbar from './ClientNavbar';
 function ViewMessages() {
   const location = useLocation()
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ function ViewMessages() {
   const [replyText, setReplyText] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [messages,setMessages] = useState([])
+  const [isInbox,setIsInbox] = useState(true)
   const handleCellClick = (message) => {
     navigate('/status',{
       state:{
@@ -100,7 +102,7 @@ function ViewMessages() {
 
   }
   useEffect(() => {
-    if (location.state?.showToast) {
+    if (location && location.state?.showToast) {
       console.log(String(location.state.showToast))
         toast.success("Form submitted successfully!", {
             position: "top-center",
@@ -110,8 +112,8 @@ function ViewMessages() {
     else{
       console.log("no show")
     }
-    fetchViewMessages()
-}, []);
+    fetchViewInboxMessages()
+  }, []);
   // Open the modal with selected message
   const handleOpenDialog = (message) => {
     setSelectedMessage(message);
@@ -178,6 +180,8 @@ function ViewMessages() {
   };
 
   return (
+    <>
+    <ClientNavbar/>
     <div className='content'>
   
       
@@ -191,8 +195,17 @@ function ViewMessages() {
           
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div className='AllMessageButton'>
-            <Button variant="contained" id="inboxButton" onClick={()=>fetchViewInboxMessages()}>Inbox</Button>
-            <Button variant="contained" id="sentButton" onClick={()=>fetchViewMessages()}>Sent</Button>
+            <Button variant="contained" id="inboxButton" onClick={()=>
+              {
+                fetchViewInboxMessages()
+                setIsInbox(true)
+              }
+              }>Inbox</Button>
+            <Button variant="contained" id="sentButton" onClick={()=>
+              {fetchViewMessages()
+                setIsInbox(false)
+              }
+              }>Sent</Button>
             </div>
             <div
     style={{
@@ -231,7 +244,7 @@ function ViewMessages() {
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Message</TableCell>
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Sent To</TableCell>
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Replies</TableCell>
-                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Actions</TableCell>
+                    {isInbox && <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Actions</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -243,7 +256,7 @@ function ViewMessages() {
                       <TableCell
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
-                        onClick={()=>handleCellClick(msg.message)}
+                        onClick={()=>handleCellClick(msg)}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         {msg.sentTo}
@@ -256,19 +269,18 @@ function ViewMessages() {
                       >
                         {msg.replies}
                       </TableCell>
-                      <TableCell align="left">
+                     {isInbox &&  <TableCell align="left">
                         <ViewHeadlineIcon 
                           style={{ cursor: 'pointer' }} 
                           onClick={() => handleOpenDialog(msg)}
                         />
-                      </TableCell>
+                      </TableCell>}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
             <br />
-            Showing 1 to 2 of 2 rows
           </CardContent>
         </Card>
       </Box>
@@ -431,6 +443,7 @@ function ViewMessages() {
         </DialogActions>
       </Dialog>
     </div>
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -16,24 +16,67 @@ import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import "./MessageStatus.css"
+import { retrieveAllRepliesForMessage } from '../../apis/messageClients';
+import ClientNavbar from './ClientNavbar';
+import { readMessage } from '../../apis/messageClients';
+import { userId } from '../utils/auth';
+import { getUnReadMessages,getUnreadMessageCount } from '../../apis/messageClients';
+import { NotificationContext } from '../contexts/NotificationsContext';
 function MessageStatus() {
+    const [rows,setRows] = useState([])
     const navigate = useNavigate();
     const location = useLocation()
+       const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContext)
+    
     const {msg} = location.state || "" // Hook for navigation
+   
+    const fetchRepliesForMessage = async()=>{
+        try {
+            const response = await retrieveAllRepliesForMessage(msg.messageId)
+            setRows(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const Read = async()=>{
+        const response = await readMessage(msg.messageId,userId)
+        fetchMessageCount()
+        fetchUnReadMessages()
+    }
+    useEffect(()=>{
+        fetchRepliesForMessage()
+        Read()
+        // fetchMessageCount()
+        // fetchUnReadMessages()
 
-    const rows = [
-        { companyName: 'DONGGUAN WEICHENG AUTOMATION', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: '9301 plant', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: 'BACTIVE DIGITAL SOLUTIONS', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: 'AUTOCOMP', date: 'NA', status: 'Not Replied', message: 'NA' },
-    ];
-
+    },[])
     const handleBack = () => {
         console.log("in handle")
         navigate('/ClientHome'); // Navigates to the home route
     };
-
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+    
+        // Extract day, month, year, hours, and minutes
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+        const year = date.getFullYear();
+    
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+    
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Adjust for 0 hour in 12-hour format
+    
+        // Combine everything in the desired format
+        return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+      }
     return (
+        <>
+        <ClientNavbar/>
+       
         <div className='content'>
 
             <Box sx={{ minWidth: 275 }}>
@@ -45,7 +88,7 @@ function MessageStatus() {
                             multiline
                             rows={4}
                             variant="outlined"
-                            defaultValue={msg}
+                            defaultValue={msg.message}
                         />
                     </CardContent>
                 </Card>
@@ -93,22 +136,21 @@ function MessageStatus() {
                                               sx={{ borderTop: '1px solid #BFE7FE', backgroundColor: '#BFE7FE' }}
 
                                 >
-                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Company Name</TableCell>
+                                    <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Name</TableCell>
                                     <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Date</TableCell>
                                     <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Status</TableCell>
                                     <TableCell className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Message</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <p >No data available</p>
-                                {/* {rows.map((row, index) => (
+                                {rows.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.companyName}</TableCell>
-                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.date}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.createdBy}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{formatDate(row.createdDate)}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.status}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.message}</TableCell>
                                     </TableRow>
-                                ))} */}
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -142,7 +184,7 @@ function MessageStatus() {
           Back
         </Button></Link>
             </div>
-        </div>
+        </div></>
     );
 }
 

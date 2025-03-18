@@ -13,12 +13,12 @@ import VendorHome from './components/vendor/VendorHome';
 import ClientHome from './components/client/ClientHome';
 import MessageStatus from './components/client/MessageStatus';
 import UnReadMessages from './components/client/UnReadMessages';
-
-
+import NotificationsContextProvider from './components/contexts/NotificationsContext';
 function App() {
   return (
     <>
-<ToastContainer />
+<NotificationsContextProvider>
+  <ToastContainer />
 <Routes>
 <Route path='/ClientHome' element={<ClientHome />}></Route>
       <Route path='/status' element={<MessageStatus />}></Route>
@@ -29,6 +29,7 @@ function App() {
       <Route path='/vendorview' element={<VendorView/>}/>
 
 </Routes>
+</NotificationsContextProvider>
     </>
   )
 }

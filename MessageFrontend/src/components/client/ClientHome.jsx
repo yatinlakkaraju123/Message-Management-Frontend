@@ -347,7 +347,7 @@ function ClientHome() {
             </MenuItem>
           ))}
       </Select>
-      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
+      {/* <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
           Business Units
       </Typography>
       <Select
@@ -390,7 +390,7 @@ function ClientHome() {
             {item.project_name==' ' && item.project_id} 
           </MenuItem>
         ))} */}
-      </Select>
+     {/* </Select> */}
       <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
         Transaction ID
       </Typography>

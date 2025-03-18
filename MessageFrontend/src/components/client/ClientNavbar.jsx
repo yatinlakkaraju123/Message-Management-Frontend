@@ -18,17 +18,65 @@ import MessageIcon from "@mui/icons-material/Message";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Link } from "react-router-dom";
 import { getUnreadMessageCount } from "../../apis/messageClients";
+import { getUnReadMessages } from "../../apis/messageClients";
 import { userId } from "../utils/auth";
-
+import { useNavigate } from "react-router-dom";
+import NotificationSidebar from "./ClientSideBar";
+import { NotificationContext } from "../contexts/NotificationsContext";
 export default function ClientNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [messageCount, setMessageCount] = React.useState(0);
   const [openSidebar, setOpenSidebar] = React.useState(false);
   const [notifications, setNotifications] = React.useState([
     "New order received",
     "Server maintenance scheduled",
     "New message from client",
   ]);
+      const navigate = useNavigate();
+
+   const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContext)
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+    
+        // Extract day, month, year, hours, and minutes
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+        const year = date.getFullYear();
+    
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+    
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Adjust for 0 hour in 12-hour format
+    
+        // Combine everything in the desired format
+        return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+      }
+      // const fetchUnReadMessages = async()=>{
+      //       try {
+      //           const response = await getUnReadMessages(userId)
+      //           // console.log(response.data)
+      //           setMessages(response.data)
+      //       } catch (error) {
+      //           console.log(error)
+      //       }
+      // }
+     
+      const read = async(message)=>{
+        console.log(message)
+            try{
+              navigate('/status',{
+                state:{
+                  msg:message
+                }
+              });
+                   
+
+            }catch(error){
+                console.log(error)
+            }
+      }
 
   // Handle menu open and close
   const handleMenu = (event) => {
@@ -38,19 +86,21 @@ export default function ClientNavbar() {
     setAnchorEl(null);
   };
 
-  // Fetch unread messages count
-  const fetchMessageCount = async () => {
-    try {
-      const response = await getUnreadMessageCount(userId);
-      setMessageCount(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // // Fetch unread messages count
+  // const fetchMessageCount = async () => {
+  //   try {
+  //     const response = await getUnreadMessageCount(userId);
+  //     setMessageCount(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   React.useEffect(() => {
-    fetchMessageCount();
-  }, [messageCount]);
+     fetchMessageCount();
+    fetchUnReadMessages()
+
+  }, []);
 
   // Toggle sidebar
   const toggleDrawer = (status) => () => {
@@ -141,6 +191,7 @@ export default function ClientNavbar() {
           )}
         </List>
       </Drawer>
+      <NotificationSidebar openSidebar={openSidebar} toggleDrawer={toggleDrawer} messages={messages} read={read} formatDate={formatDate}/>
     </Box>
   );
 }

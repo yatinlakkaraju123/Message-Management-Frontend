@@ -82,3 +82,7 @@ export const readMessage = async(messageId,userId)=>{
     return apiClient.post(`/effigo/api/messagemanagement/readUnreadMessage/message/${messageId}/user/${userId}`)
 }
 
+export const retrieveAllRepliesForMessage = async(messageId)=>{
+    return apiClient.get(`/effigo/api/messagemanagement/client/replyView/${messageId}`)
+}
+
