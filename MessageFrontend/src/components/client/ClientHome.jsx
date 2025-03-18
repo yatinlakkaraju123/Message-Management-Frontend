@@ -19,14 +19,39 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useNavigate } from 'react-router-dom';
 import { modules } from '../utils/ClientModules';
-import { retrieveAllCategories } from '../../apis/messageClients';
+import { retrieveAllCategories, retrieveBusinessUnits, retrieveProjects, retrieveSuppliers, retrieveTransactionIds, submitMessage } from '../../apis/messageClients';
+import { ClipLoader } from 'react-spinners';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function ClientHome() {
-
+    // Reusable sx style for the MUI Select fields
+    const navigate = useNavigate()
+    const selectFieldStyle = {
+      width: '900px',
+      height: '40px',
+      fontSize: '14px',
+      boxSizing: 'border-box',
+      // Override MUI's outlined style:
+      '& .MuiOutlinedInput-notchedOutline': {
+        border: '1.2px solid #BDC1CA',
+      },
+      '& .MuiOutlinedInput-root': {
+        borderRadius: '4px',
+        backgroundColor: '#FFFFFF',
+      },
+    };
+    
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [text, setText] = useState('');
-  const [categories,setCategories] = useState([])
+  const [transactionIds,setTransactionIds] = useState([])
+  const [selectedModule,setModule] =useState("")
+  const [suppliers,setSuppliers] = useState([])
+  const [transactionId,setTransactionId] = useState("")
+  const [businessUnits,setBusinessUnits] = useState([])
+  const [projects,setProjects] = useState([])
+  const [file,setFile] = useState(null)
+  const [isLoading,setIsLoading] = useState(false)
   const fetchCategories = async ()=>{
       try {
         const response = await retrieveAllCategories()
@@ -36,17 +61,41 @@ function ClientHome() {
       }
       
   }
+  const fetchBusinessUnits = async()=>{
+    try {
+      const response = await retrieveBusinessUnits()
+      setBusinessUnits(response.data)
+
+    } catch (error) {
+      
+    }
+  }
+  const fetchTransactionIds = async()=>{
+    try {
+      const response = await retrieveTransactionIds()
+      const idObjectArray = response.data 
+      const idArray = idObjectArray.map((item,index)=>{
+        return item.lot_id
+      })
+      // console.log(idArray)
+      setTransactionIds(idArray)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const fetchProjects = async()=>{
+    try {
+      const response = await retrieveProjects()
+      console.log(response.data)
+      setProjects(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(()=>{
-    fetchCategories()
-    console.log("categories:",categories)
+    fetchBusinessUnits()
   },[])
-  // Dummy Data
-  const dummyData = [
-    { id: 1, company: 'ABC Corp', name: 'John Doe', email: 'john.doe@abc.com', contact: '123-456-7890' },
-    { id: 2, company: 'XYZ Ltd', name: 'Jane Smith', email: 'jane.smith@xyz.com', contact: '987-654-3210' },
-    { id: 3, company: 'Tech Solutions', name: 'Mark Wilson', email: 'mark.wilson@tech.com', contact: '555-123-4567' },
-    { id: 4, company: 'Global Supplies', name: 'Emily Johnson', email: 'emily.johnson@global.com', contact: '111-222-3333' },
-  ];
+  
 
   // Enforce 200-char limit for message
   const handleChange = (e) => {
@@ -67,7 +116,7 @@ function ClientHome() {
     if (selectAll) {
       setSelectedRows([]); // Uncheck all
     } else {
-      setSelectedRows(dummyData.map((row) => row.id)); // Check all
+      setSelectedRows(suppliers.map((row) => row.user_id)); // Check all
     }
     setSelectAll(!selectAll);
   };
@@ -80,7 +129,19 @@ function ClientHome() {
       fileInputRef.current.click();
     }
   };
+  const handleModuleChange = (event)=>{
+    const selectedModule = event.target.value;
+    if(selectedModule!=""){
+      fetchTransactionIds()
+      setModule(selectedModule)
+    }
+  }
+  const isFileSizeValid = (file) => {
+    const MAX_SIZE_MB = 50; // Maximum allowed size in MB
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024; // Convert MB to Bytes
 
+    return file.size < MAX_SIZE_BYTES;
+};
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -88,32 +149,76 @@ function ClientHome() {
         alert('Please select a PDF file');
         return;
       }
-      console.log('PDF file uploaded:', file.name);
+      if(!isFileSizeValid(file)){
+        alert("please select a file with size less than 50 MB")
+        return
+      }
+      
+      // console.log("file:",file)
+      // console.log('PDF file uploaded:', file.name);
+      setFile(file)
       // TODO: Add your file processing/upload logic here
       event.target.value = ''; // Reset file input for future uploads
     }
   };
-
-  // Reusable sx style for the MUI Select fields
-  const selectFieldStyle = {
-    width: '900px',
-    height: '40px',
-    fontSize: '14px',
-    boxSizing: 'border-box',
-    // Override MUI's outlined style:
-    '& .MuiOutlinedInput-notchedOutline': {
-      border: '1.2px solid #BDC1CA',
-    },
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '4px',
-      backgroundColor: '#FFFFFF',
-    },
+  const search = async(e)=>{
+    e.preventDefault();
+    try {
+      const response = await retrieveSuppliers(transactionId)
+      setSelectedRows([])
+      setSelectAll(false)
+      setSuppliers(response.data)
+      console.log(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const submit = async(e)=>{
+    e.preventDefault();
+    try {
+      // const response = await submitMessage(file)
+      // console.log(response)
+      //console.log("file:",file);
+      const messageObject = {
+          message:text,
+          status:1,
+          createdBy: "USR-a427e4-05-07-2021-01",
+          transactionId:transactionId
+      }
+     
+      // console.log(messageObject)
+      // setSelectedRows(['USR-a427e4-05-07-2021-01'])
+      // console.log("suppliers:",selectedRows)
+    //   setIsLoading(true)
+    // console.log(file)
+      const response = await submitMessage(file,messageObject,selectedRows)
+      setIsLoading(false)
+      setSelectedRows([])
+    setSelectAll(false)
+    setText('')
+    setModule("")
+    setFile(null)
+      navigate('/view',{
+        state: { showToast: true }
+        // Pass a flag to trigger toast      }})
+    } 
+    )
+     }catch (error) {
+      console.log(error)
+    }
+  }
+  const isFormValid = () => {
+    // Check if all fields are filled
+    // return true;
+    return file !== null && text.trim() !== '' && selectedRows.length>0 && transactionId.trim()!== '';
   };
+
 
   const card = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className='AllMessageButton'>
-        <Link to="/view"><Button variant="contained">All Messages</Button></Link>
+        {/* <Link to="/view">        <AccountCircleIcon/>        </Link> */}
+
       </div>
 
       {/* Message Title */}
@@ -205,6 +310,8 @@ function ClientHome() {
                 boxShadow: 'none',
               },
             }}
+            // onChange={(e)=>setFile(e.target.files[0])}
+
           >
             Upload
           </Button>
@@ -215,23 +322,7 @@ function ClientHome() {
       <Typography variant="h6" className='title' >
         Choose Suppliers
       </Typography>
-      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 1 }}>Category</Typography>
-      <Select
-        variant="outlined"
-        displayEmpty
-        sx={selectFieldStyle}
-        renderValue={(selected) =>
-          selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Category</span>
-        }
-      >
-        <MenuItem value="" disabled>
-          Category
-        </MenuItem>
-        {categories.length!=0 && categories.map((item,index)=>(
-          <MenuItem value={item}>{item}</MenuItem>
-        ))}
-        
-      </Select>
+      
 
       <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
         Module
@@ -243,6 +334,7 @@ function ClientHome() {
         renderValue={(selected) =>
           selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Modules</span>
         }
+        onChange={handleModuleChange}
       >
         <MenuItem value="" disabled>
           Modules
@@ -254,7 +346,50 @@ function ClientHome() {
             </MenuItem>
           ))}
       </Select>
-
+      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
+          Business Units
+      </Typography>
+      <Select
+        variant="outlined"
+        displayEmpty
+        sx={selectFieldStyle}
+        renderValue={(selected) =>
+          selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Business Units</span>
+        }
+        onChange={handleModuleChange}
+      >
+        <MenuItem value="" disabled>
+          BusinessUnits
+        </MenuItem>
+        {businessUnits.length!=0 && businessUnits.map((item,index)=>(
+          <MenuItem value={item.business_uni} key={item.business_uni}>
+            {item.business_unit_name}
+          </MenuItem>
+        ))}
+        
+      </Select>
+      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
+        Projects
+      </Typography>
+      <Select
+        variant="outlined"
+        displayEmpty
+        sx={selectFieldStyle}
+        renderValue={(selected) =>
+          selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Projects</span>
+        }
+        onChange={handleModuleChange}
+      >
+        <MenuItem value="" disabled>
+          Projects
+        </MenuItem>
+        {/* {projects.length>0 && projects.map((item,index)=>(
+          <MenuItem value={item.project_id} key={index}>
+            {item.project_name!=' ' && item.project_name}
+            {item.project_name==' ' && item.project_id} 
+          </MenuItem>
+        ))} */}
+      </Select>
       <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
         Transaction ID
       </Typography>
@@ -265,16 +400,22 @@ function ClientHome() {
         renderValue={(selected) =>
           selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Transaction ID</span>
         }
+        onChange={(e)=>setTransactionId(e.target.value)}
       >
         <MenuItem value="" disabled>
           Transaction ID
         </MenuItem>
-        <MenuItem value="Supplier1">Supplier1</MenuItem>
-        <MenuItem value="Supplier2">Supplier2</MenuItem>
+        {transactionIds.length>0 && transactionIds.map(
+          (item,index)=>(
+            <MenuItem value={item} key={index}>{item}</MenuItem>
+
+          )
+        )}
+        
       </Select>
 
       <div className='AllMessageButton' style={{ marginTop: '16px' }}>
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" onClick={search} disabled={transactionId===""}>Search</Button>
       </div>
     </CardContent>
     
@@ -321,8 +462,8 @@ function ClientHome() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dummyData.map((supplier) => (
-              <TableRow key={supplier.id}>
+            {suppliers.map((supplier,index) => (
+              <TableRow key={supplier.user_id}>
                 <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>
                   <Checkbox sx={{
     color: '#012954',
@@ -330,14 +471,14 @@ function ClientHome() {
       color: '#012954',
     },
   }}
-                    checked={selectedRows.includes(supplier.id)}
-                    onChange={() => handleRowSelect(supplier.id)}
+                    checked={selectedRows.includes(supplier.user_id)}
+                    onChange={() => handleRowSelect(supplier.user_id)}
                   />
                 </TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.company}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.name}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.email}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.contact}</TableCell>
+                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.company_name}</TableCell>
+                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.first_name}</TableCell>
+                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.user_name}</TableCell>
+                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>XXX</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -349,6 +490,8 @@ function ClientHome() {
         <Button 
           variant="contained"
           sx={{ fontFamily: 'Poppins, sans-serif' }}
+          onClick={submit}
+          disabled={!isFormValid()}
         >
           Submit
         </Button>
@@ -381,7 +524,13 @@ function ClientHome() {
 
   return (
     <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
-     <Typography variant="h4"  className='title'>
+ <div className="">
+          
+          {isLoading &&          <div className="loading-overlay"> <ClipLoader size={150} color="#123abc" />
+
+          </div>
+        }
+        </div>     <Typography variant="h4"  className='title'>
         Send Message 
       </Typography>
       <Box sx={{ minWidth: 275 }} className="card1">

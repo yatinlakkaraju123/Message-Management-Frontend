@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
-
+import {  Snackbar, Alert } from "@mui/material";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   Box,
   Card,
@@ -24,38 +27,162 @@ import {
 } from '@mui/material';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import './ViewMessages.css';
-
+import { createReply, downloadFile, retrieveMessageInboxViews, retrieveMessagesViews, updateFile } from '../../apis/messageClients';
+import { useRef } from 'react';
 function ViewMessages() {
+  const location = useLocation()
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [openPopup, setOpenPopUp] = useState(false);
+    const fileInputRef = useRef(null);
+    const handleUploadClick = () => {
+      console.log("clicked upload")
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+      else{
+        console.log("fileinput not clicked")
+      }
+    };
+    const isFileSizeValid = (file) => {
+      const MAX_SIZE_MB = 50; // Maximum allowed size in MB
+      const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024; // Convert MB to Bytes
+  
+      return file.size < MAX_SIZE_BYTES;
+  };
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.type !== 'application/pdf') {
+          alert('Please select a PDF file');
+          return;
+        }
+        if(!isFileSizeValid(file)){
+          alert("please select a file with size less than 50 MB")
+          return
+        }
+        console.log('PDF file uploaded:', file.name);
+        setFile(file)
+        // TODO: Add your file processing/upload logic here
+        event.target.value = ''; // Reset file input for future uploads
+      }
+    };
+    const [file,setFile] = useState(null)
+  const [open,setOpen] = useState(false)
+    const handleOpen = () => {
+        setOpenPopUp(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") return;
+        setOpenPopUp(false);
+    };
   const [replyText, setReplyText] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
-
-  const handleCellClick = () => {
-    navigate('/status');
+  const [messages,setMessages] = useState([])
+  const handleCellClick = (message) => {
+    navigate('/status',{
+      state:{
+        msg:message
+      }
+    });
   };
+  const fetchViewMessages = async()=>{
+    const userId = "USR-a427e4-05-07-2021-01"
 
+    const response = await retrieveMessagesViews(userId)
+    setMessages(response.data)
+  }
+  const fetchViewInboxMessages = async()=>{
+    const userId = "USR-a427e4-05-07-2021-01"
+    const response = await retrieveMessageInboxViews(userId)
+    setMessages(response.data)
+    console.log("MESSAGES:",response.data)
+
+  }
+  useEffect(() => {
+    if (location.state?.showToast) {
+      console.log(String(location.state.showToast))
+        toast.success("Form submitted successfully!", {
+            position: "top-center",
+            autoClose: 3000 // 3 seconds
+        });
+    }
+    else{
+      console.log("no show")
+    }
+    fetchViewMessages()
+}, []);
   // Open the modal with selected message
   const handleOpenDialog = (message) => {
     setSelectedMessage(message);
     setOpen(true);
   };
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
 
+    // Extract day, month, year, hours, and minutes
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Adjust for 0 hour in 12-hour format
+
+    // Combine everything in the desired format
+    return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+  }
   // Close the modal
   const handleCloseDialog = () => {
     setOpen(false);
     setReplyText('');
   };
-
+  const handleDownload = async()=>{
+    const fileName = selectedMessage.documentURL.split('/').pop()
+  
+    const response = await downloadFile(fileName)
+    const fileURL = (response.data)
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.setAttribute("download", fileName);
+    link.setAttribute("target","_blank") // Optional: Set a custom filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
   // Handle sending the reply (for now, just logging it)
-  const handleSendReply = () => {
+  const handleSendReply = async() => {
     console.log('Reply sent:', replyText);
+    console.log("file:",file)
+    try {
+      const fileName = selectedMessage.documentURL.split('/').pop()
+      const msgId = selectedMessage.messageId;
+      const userId = selectedMessage.userId;
+      const messageObject = {
+        message:replyText,
+        status:1,
+        createdBy: "USR-a427e4-05-07-2021-01",
+        transactionId:""
+    }
+      const response = await createReply(msgId,messageObject,file,fileName,userId)
+      console.log(response.data)
+    } catch (error) {
+      console.log(error)
+    }
     setOpen(false);
     setReplyText('');
   };
 
   return (
     <div className='content'>
+  
+      
+      
+       
       <Box sx={{ minWidth: 275 }} className="card1">
         <Card variant="outlined">
           <CardContent>
@@ -64,8 +191,8 @@ function ViewMessages() {
           
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div className='AllMessageButton'>
-            <Button variant="contained" id="inboxButton">Inbox</Button>
-            <Button variant="contained" id="sentButton">Sent</Button>
+            <Button variant="contained" id="inboxButton" onClick={()=>fetchViewInboxMessages()}>Inbox</Button>
+            <Button variant="contained" id="sentButton" onClick={()=>fetchViewMessages()}>Sent</Button>
             </div>
             <div
     style={{
@@ -108,27 +235,15 @@ function ViewMessages() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {[{
-                    from: "amin s",
-                    date: "18/02/2025 18:36",
-                    message: "Hi",
-                    sentTo: 4,
-                    replies: 0
-                  }, {
-                    from: "amin s",
-                    date: "19/11/2024 11:36",
-                    message: "Hi",
-                    sentTo: 1,
-                    replies: 1
-                  }].map((msg, index) => (
+                  {messages.length>0 && messages.map((msg, index) => (
                     <TableRow key={index}>
-                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.from}</TableCell>
-                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.date}</TableCell>
+                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.user}</TableCell>
+                      <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{formatDate(msg.dateTime)}</TableCell>
                       <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{msg.message}</TableCell>
                       <TableCell
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
-                        onClick={handleCellClick}
+                        onClick={()=>handleCellClick(msg.message)}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         {msg.sentTo}
@@ -137,7 +252,7 @@ function ViewMessages() {
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
-                        onClick={handleCellClick}
+                        onClick={()=>handleCellClick(msg.message)}
                       >
                         {msg.replies}
                       </TableCell>
@@ -194,9 +309,63 @@ function ViewMessages() {
             Send Message
           </Typography>
         </DialogTitle>
+        
         <DialogContent sx={{ minWidth: '600px', fontFamily: 'Poppins, sans-serif' }}>
-          <p><strong>From:</strong> {selectedMessage?.from}</p>
+          <p><strong>From:</strong> {selectedMessage?.user}</p>
           <p><strong>Message:</strong> {selectedMessage?.message}</p>
+         <p><strong>Upload:</strong> 
+         
+         <Button
+            variant="contained"
+            startIcon={<CloudUploadIcon />}
+
+            sx={{
+              margin:'5px',
+              backgroundColor: '#D2E2FA',
+              color: '#2C3970',
+              textTransform: 'none',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#B4C2F0',
+                boxShadow: 'none',
+              },
+            }}
+            // onChange={(e)=>setFile(e.target.files[0])}
+            onClick={handleUploadClick}
+
+          >
+          
+            Upload
+          </Button>
+          <input
+          type="file"
+          accept="application/pdf"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+          </p>
+          <p><strong>Download:</strong> <Button
+            variant="contained"
+            startIcon={<CloudDownloadIcon />}
+            // onClick={handleUploadClick}
+            sx={{
+              margin:'2px',
+              backgroundColor: '#D2E2FA',
+              color: '#2C3970',
+              textTransform: 'none',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#B4C2F0',
+                boxShadow: 'none',
+              },
+            }}
+            // onChange={(e)=>setFile(e.target.files[0])}
+            onClick={handleDownload}
+          >
+            Download
+          </Button></p>
+         
           <TextField
             autoFocus
             margin="dense"

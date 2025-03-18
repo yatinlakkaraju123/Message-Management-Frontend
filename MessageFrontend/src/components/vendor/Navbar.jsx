@@ -2,15 +2,21 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import { Badge } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import MessageIcon from '@mui/icons-material/Message';
+
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { getUnreadMessageCount } from '../../apis/messageClients';
+import { userId } from '../utils/auth';
+import { Link } from 'react-router-dom';
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [messageCount,setMessageCount] =React.useState(0)
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -18,7 +24,17 @@ export default function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const fetchMessageCount = async()=>{
+    try {
+      const response = await getUnreadMessageCount(userId)
+      setMessageCount(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  React.useEffect(()=>{
+    fetchMessageCount()
+  },[messageCount])
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: 'white' }}>
       <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 'none' }}>
@@ -28,9 +44,15 @@ export default function Navbar() {
         {/* Navbar Title */}
       </Typography>
       {/* Notifications Icon */}
-      <IconButton size="large" aria-label="notifications" sx={{ color: 'black' }}>
+      <Link to="/unreadMessages"><IconButton size="large" aria-label="notifications" sx={{ color: 'black' }}>
+        <Badge badgeContent={messageCount} color='error'>
+
         <NotificationsNoneIcon />
-      </IconButton>
+
+        </Badge>
+      </IconButton></Link>
+     <Link to="/view"> <IconButton size="large" aria-label="notifications" sx={{ color: 'black' }}>
+<MessageIcon/>      </IconButton></Link>
       {/* Account Icon */}
       <IconButton
         size="large"

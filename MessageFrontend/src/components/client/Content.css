@@ -179,3 +179,22 @@ body{
     
     
   }
+  /* The overlay container */
+.loading-overlay {
+  position: fixed; /* Fixed to the entire screen */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex; /* Flex to center the spinner */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it stays on top of other elements */
+}
+
+/* The spinner style (optional to adjust) */
+.loading-overlay .clip-loader {
+  /* Any specific spinner styles if needed */
+}
+

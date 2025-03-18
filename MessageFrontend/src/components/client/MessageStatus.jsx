@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -17,7 +17,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import "./MessageStatus.css"
 function MessageStatus() {
-    const navigate = useNavigate(); // Hook for navigation
+    const navigate = useNavigate();
+    const location = useLocation()
+    const {msg} = location.state || "" // Hook for navigation
 
     const rows = [
         { companyName: 'DONGGUAN WEICHENG AUTOMATION', date: 'NA', status: 'Not Replied', message: 'NA' },
@@ -43,7 +45,7 @@ function MessageStatus() {
                             multiline
                             rows={4}
                             variant="outlined"
-                            defaultValue="Hi"
+                            defaultValue={msg}
                         />
                     </CardContent>
                 </Card>
@@ -98,14 +100,15 @@ function MessageStatus() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row, index) => (
+                                <p >No data available</p>
+                                {/* {rows.map((row, index) => (
                                     <TableRow key={index}>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.companyName}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.date}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.status}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.message}</TableCell>
                                     </TableRow>
-                                ))}
+                                ))} */}
                             </TableBody>
                         </Table>
                     </TableContainer>
