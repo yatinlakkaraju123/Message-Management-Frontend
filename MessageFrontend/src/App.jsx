@@ -3,7 +3,7 @@
 import './App.css'
 import '@fontsource/roboto/300.css';
 import { Route, Routes } from 'react-router-dom';
-import Navbar from './components/vendor/Navbar';
+import Navbar from './components/vendor/VendorNavbar';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ViewMessages from './components/client/ViewMessages';
@@ -18,11 +18,8 @@ import UnReadMessages from './components/client/UnReadMessages';
 function App() {
   return (
     <>
-<Navbar/>
 <ToastContainer />
 <Routes>
-
-
 <Route path='/ClientHome' element={<ClientHome />}></Route>
       <Route path='/status' element={<MessageStatus />}></Route>
       <Route path='/view' element={<ViewMessages />}></Route>

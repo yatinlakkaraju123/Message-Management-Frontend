@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import { getUnreadMessageCount } from "../../apis/messageClients";
 import { userId } from "../utils/auth";
 
-export default function Navbar() {
+export default function VendorNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [messageCount, setMessageCount] = React.useState(0);
   const [openSidebar, setOpenSidebar] = React.useState(false);

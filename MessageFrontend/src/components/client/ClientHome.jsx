@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ClientNavbar from './ClientNavbar';
 
 import Table from '@mui/material/Table';
 import { Typography } from '@mui/material';
@@ -524,6 +525,7 @@ function ClientHome() {
 
   return (
     <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <ClientNavbar/>
  <div className="">
           
           {isLoading &&          <div className="loading-overlay"> <ClipLoader size={150} color="#123abc" />

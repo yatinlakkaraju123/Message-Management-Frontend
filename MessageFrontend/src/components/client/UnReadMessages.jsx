@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../vendor/Navbar'
+import Navbar from '../vendor/VendorNavbar'
 import {
   Box,
   Card,

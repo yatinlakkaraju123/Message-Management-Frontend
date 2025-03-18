@@ -15,6 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router-dom';
+import VendorNavbar from './VendorNavbar';
 
 import { vendormodules } from '../utils/VendorModules';
 
@@ -368,6 +369,8 @@ function VendorHome() {
 
   return (
     <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <VendorNavbar />
+
      <Typography variant="h4"  className='title'>
         Send Message 
       </Typography>
