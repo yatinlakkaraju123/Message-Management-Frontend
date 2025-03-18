@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import "./VendorHome.css";
+import { useState, useRef, useEffect } from 'react';
+import './VendorHome.css';
 import { Box, Typography, Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -16,22 +16,76 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router-dom';
 import VendorNavbar from './VendorNavbar';
-
+import { retrieveVendorTransactionId, retriveVendors, submitMessage } from '../../apis/vendorApiImpl';
 import { vendormodules } from '../utils/VendorModules';
 
 function VendorHome() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [text, setText] = useState('');
+  const [transactionId, setTransactionId] = useState('');
+  const [module, setModule] = useState('');
+  const [file, setFile] = useState(null);
+  const [transactionIds, setTransactionIds] = useState([]);
+  const [vendors, setVendors] = useState([]);
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
-  // Dummy Data
-  const dummyData = [
-    { id: 1, company: 'ABC Corp', name: 'John Doe', email: 'john.doe@abc.com', contact: '123-456-7890' },
-    { id: 2, company: 'XYZ Ltd', name: 'Jane Smith', email: 'jane.smith@xyz.com', contact: '987-654-3210' },
-    { id: 3, company: 'Tech Solutions', name: 'Mark Wilson', email: 'mark.wilson@tech.com', contact: '555-123-4567' },
-    { id: 4, company: 'Global Supplies', name: 'Emily Johnson', email: 'emily.johnson@global.com', contact: '111-222-3333' },
-  ];
+  useEffect(() => {
+    fetchTransactionIds();
+  }, []);
+
+  const fetchTransactionIds = async () => {
+    try {
+      const response = await retrieveVendorTransactionId();
+      if (response.data && Array.isArray(response.data)) {
+        setTransactionIds(response.data);
+      } else {
+        console.error('Invalid data format from API');
+      }
+    } catch (error) {
+      console.error('Error fetching transaction IDs:', error);
+    }
+  };
+
+  const search = async (e) => {
+    e.preventDefault();
+    console.log('Transaction ID:', transactionId); // Confirm the correct value
+    try {
+      const response = await retriveVendors(transactionId);
+      setSelectedRows([]);
+      setSelectAll(false);
+      setVendors(response.data || []);
+      console.log('Vendors:', response.data);
+    } catch (error) {
+      console.error('Error fetching vendors:', error);
+    }
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    try {
+      const messageObject = {
+        message: text,
+        status: 1,
+        createdBy: 'SUSR-d3af-12-07-2024-11',
+        transactionId: transactionId,
+      };
+
+      const response = await submitMessage(file, messageObject, selectedRows);
+      console.log('Response:', response);
+      setSelectedRows([]);
+      setSelectAll(false);
+      setText('');
+      setModule('');
+      setFile(null);
+      navigate('/vendorview', {
+        state: { showToast: true },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Enforce 200-char limit for message
   const handleChange = (e) => {
@@ -46,46 +100,60 @@ function VendorHome() {
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
   };
-  
-  // Select All functionality
+
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedRows([]); // Uncheck all
     } else {
-      setSelectedRows(dummyData.map((row) => row.id)); // Check all
+      setSelectedRows(vendors.map((row) => row.user_id)); // Check all
     }
     setSelectAll(!selectAll);
   };
 
   // PDF Upload functionality
-  const fileInputRef = useRef(null);
-
   const handleUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
+  const isFileSizeValid = (file) => {
+    const MAX_SIZE_MB = 50; // Maximum allowed size in MB
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024; // Convert MB to Bytes
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        alert('Please select a PDF file');
-        return;
-      }
-      console.log('PDF file uploaded:', file.name);
-      // TODO: Add your file processing/upload logic here
-      event.target.value = ''; // Reset file input for future uploads
+    return file.size < MAX_SIZE_BYTES;
+};
+
+const isFormValid = () => {
+  // Check if all fields are filled
+  // return true;
+  return file !== null && text.trim() !== '' && selectedRows.length>0 && transactionId.trim()!== '';
+};
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    if (file.type !== 'application/pdf') {
+      alert('Please select a PDF file');
+      return;
     }
-  };
-
+    if(!isFileSizeValid(file)){
+      alert("please select a file with size less than 50 MB")
+      return
+    }
+    
+    // console.log("file:",file)
+    // console.log('PDF file uploaded:', file.name);
+    setFile(file)
+    // TODO: Add your file processing/upload logic here
+    event.target.value = ''; // Reset file input for future uploads
+  }
+};
   // Reusable sx style for the MUI Select fields
   const selectFieldStyle = {
     width: '900px',
     height: '40px',
     fontSize: '14px',
     boxSizing: 'border-box',
-    // Override MUI's outlined style:
     '& .MuiOutlinedInput-notchedOutline': {
       border: '1.2px solid #BDC1CA',
     },
@@ -97,21 +165,16 @@ function VendorHome() {
 
   const card = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-      <div className='AllMessageButton'>
-      <Button 
-      variant="contained" 
-      onClick={() => navigate('/vendorview')}
-    >
-      All Messages
-    </Button>
+      <div className="AllMessageButton">
+        <Button variant="contained" onClick={() => navigate('/vendorview')}>
+          All Messages
+        </Button>
       </div>
 
-      {/* Message Title */}
-      <Typography variant="subtitle1"  className='small-title' sx={{ marginBottom: 1}}>
+      <Typography variant="subtitle1" className="small-title" sx={{ marginBottom: 1 }}>
         Message
       </Typography>
 
-      {/* Full-width Message Text Area */}
       <div style={{ position: 'relative', width: '100%' }}>
         <textarea
           id="message"
@@ -136,7 +199,6 @@ function VendorHome() {
             outline: 'none',
           }}
         />
-        {/* Character Count */}
         <span
           style={{
             position: 'absolute',
@@ -150,13 +212,10 @@ function VendorHome() {
         </span>
       </div>
 
-      {/* Document Section */}
       <Box sx={{ marginTop: 2 }}>
-        <Typography variant="subtitle1"  className='small-title' sx={{ marginBottom: 1 }}>
+        <Typography variant="subtitle1" className="small-title" sx={{ marginBottom: 1 }}>
           Document
         </Typography>
-
-        {/* Hidden File Input */}
         <input
           type="file"
           accept="application/pdf"
@@ -164,7 +223,6 @@ function VendorHome() {
           style={{ display: 'none' }}
           onChange={handleFileChange}
         />
-
         <Box
           sx={{
             border: '2px dashed #CBD5E1',
@@ -201,30 +259,12 @@ function VendorHome() {
         </Box>
       </Box>
 
-      {/* Choose Suppliers */}
-      <Typography variant="h6" className='title' >
-        Choose Suppliers
-      </Typography>
-      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 1 }}>Category</Typography>
-      <Select
-        variant="outlined"
-        displayEmpty
-        sx={selectFieldStyle}
-        renderValue={(selected) =>
-          selected || <span style={{ color: 'rgba(0, 0, 0, 0.5)' }}>Category</span>
-        }
-      >
-        <MenuItem value="" disabled>
-          Category
-        </MenuItem>
-        <MenuItem value="Supplier1">Supplier1</MenuItem>
-        <MenuItem value="Supplier2">Supplier2</MenuItem>
-      </Select>
-
-      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
+      <Typography variant="subtitle2" className="small-title" sx={{ marginTop: 2 }}>
         Module
       </Typography>
       <Select
+        value={module}
+        onChange={(e) => setModule(e.target.value)}
         variant="outlined"
         displayEmpty
         sx={selectFieldStyle}
@@ -243,10 +283,12 @@ function VendorHome() {
           ))}
       </Select>
 
-      <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
+      <Typography variant="subtitle2" className="small-title" sx={{ marginTop: 2 }}>
         Transaction ID
       </Typography>
       <Select
+        value={transactionId}
+        onChange={(e) => setTransactionId(e.target.value)}
         variant="outlined"
         displayEmpty
         sx={selectFieldStyle}
@@ -257,87 +299,92 @@ function VendorHome() {
         <MenuItem value="" disabled>
           Transaction ID
         </MenuItem>
-        <MenuItem value="Supplier1">Supplier1</MenuItem>
-        <MenuItem value="Supplier2">Supplier2</MenuItem>
+       {transactionIds.length > 0 &&
+  transactionIds.map((item, index) => (
+    <MenuItem value={item.lot_id} key={index}>
+   {item.lot_id}
+    </MenuItem>
+  ))}
       </Select>
 
-      <div className='AllMessageButton' style={{ marginTop: '16px' }}>
-        <Button variant="contained">Search</Button>
+      <div className="AllMessageButton" style={{ marginTop: '16px' }}>
+        <Button variant="contained" onClick={search} disabled={transactionId===""}>
+          Search
+        </Button>
       </div>
     </CardContent>
-    
   );
 
   const card2 = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-     <Typography
-  variant="h6"
-  sx={{
-    fontFamily: 'Poppins, sans-serif',
-    fontWeight: 600,
-    fontSize: '24px',
-    lineHeight: '36px',
-    letterSpacing: '0', // or '0px'
-  }}
->
-  Selected Suppliers
-</Typography>
-
-      <TableContainer
-        component={Paper}
-        className="TableContainer"
-        sx={{ borderRadius: '12px', overflow: 'hidden' }}
+      <Typography
+        variant="h6"
+        sx={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 600,
+          fontSize: '24px',
+          lineHeight: '36px',
+          letterSpacing: '0',
+        }}
       >
+        Selected Vendors
+      </Typography>
+
+      <TableContainer component={Paper} className="TableContainer" sx={{ borderRadius: '12px', overflow: 'hidden' }}>
         <Table sx={{ minWidth: 350 }} aria-label="supplier table">
           <TableHead>
-            <TableRow 
-              sx={{ borderTop: '1px solid #BFE7FE', backgroundColor: '#BFE7FE' }}
-            >
-              <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>
-                <Checkbox sx={{
-    color: '#012954',
-    '&.Mui-checked': {
-      color: '#012954',
-    },
-  }} checked={selectAll} onChange={handleSelectAll} />
+            <TableRow sx={{ borderTop: '1px solid #BFE7FE', backgroundColor: '#BFE7FE' }}>
+              <TableCell align="left" className="small-title">
+                <Checkbox
+                  sx={{
+                    color: '#012954',
+                    '&.Mui-checked': {
+                      color: '#012954',
+                    },
+                  }}
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
                 Select All
-              </TableCell >
-              <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Supplier Company</TableCell>
-              <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Supplier Name</TableCell>
-              <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Email Id</TableCell>
-              <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Contact</TableCell>
+              </TableCell>
+              <TableCell align="left" className="small-title">
+                Vendor Name
+              </TableCell>
+              <TableCell align="left" className="small-title">
+                Email ID
+              </TableCell>
+              <TableCell align="left" className="small-title">
+                Contact
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {dummyData.map((supplier) => (
-              <TableRow key={supplier.id}>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>
-                  <Checkbox sx={{
-    color: '#012954',
-    '&.Mui-checked': {
-      color: '#012954',
-    },
-  }}
-                    checked={selectedRows.includes(supplier.id)}
-                    onChange={() => handleRowSelect(supplier.id)}
+            {vendors.map((vendor, index) => (
+              <TableRow key={vendor.user_id}>
+                <TableCell align="left">
+                  <Checkbox
+                    sx={{
+                      color: '#012954',
+                      '&.Mui-checked': {
+                        color: '#012954',
+                      },
+                    }}
+                    checked={selectedRows.includes(vendor.user_id)}
+                    onChange={() => handleRowSelect(vendor.user_id)}
                   />
                 </TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.company}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.name}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.email}</TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.contact}</TableCell>
+                <TableCell align="left">{vendor.first_name}</TableCell>
+                <TableCell align="left">{vendor.user_name}</TableCell>
+                <TableCell align="left">{vendor.mobile}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-  
+
       <br />
-      <div className='Card2ButtonGroup'>
-        <Button 
-          variant="contained"
-          sx={{ fontFamily: 'Poppins, sans-serif' }}
-        >
+      <div className="Card2ButtonGroup">
+        <Button variant="contained" onClick={submit}  disabled={!isFormValid()}>
           Submit
         </Button>
         <Button
@@ -368,11 +415,10 @@ function VendorHome() {
   );
 
   return (
-    <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="content" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <VendorNavbar />
-
-     <Typography variant="h4"  className='title'>
-        Send Message 
+      <Typography variant="h4" className="title">
+        Send Message
       </Typography>
       <Box sx={{ minWidth: 275 }} className="card1">
         <Card variant="outlined">{card}</Card>
