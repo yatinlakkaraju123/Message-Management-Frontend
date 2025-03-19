@@ -168,7 +168,7 @@ function ViewMessages() {
         message:replyText,
         status:1,
         createdBy: "USR-a427e4-05-07-2021-01",
-        transactionId:""
+        transactionId:selectedMessage.transactionID
     }
       const response = await createReply(msgId,messageObject,file,fileName,userId)
       console.log(response.data)
@@ -265,7 +265,7 @@ function ViewMessages() {
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
-                        onClick={()=>handleCellClick(msg.message)}
+                        onClick={()=>handleCellClick(msg)}
                       >
                         {msg.replies}
                       </TableCell>
