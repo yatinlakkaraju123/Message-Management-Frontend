@@ -5,6 +5,7 @@ import { vendorUserId } from '../utils/auth';
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
 import {  Snackbar, Alert } from "@mui/material";
+import VendorNavbar from './VendorNavbar';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
@@ -34,7 +35,9 @@ import { retrieveVendorMessageInboxViews, retrieveVendorMessages } from '../../a
 function ViewMessages() {
   const location = useLocation()
   const navigate = useNavigate();
+
   const [openPopup, setOpenPopUp] = useState(false);
+  const [isInbox,setIsInbox] = useState(true)
     const fileInputRef = useRef(null);
     const handleUploadClick = () => {
       console.log("clicked upload")
@@ -82,7 +85,7 @@ function ViewMessages() {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [messages,setMessages] = useState([])
   const handleCellClick = (message) => {
-    navigate('/status',{
+    navigate('/vendorstatus',{
       state:{
         msg:message
       }
@@ -111,8 +114,8 @@ function ViewMessages() {
     else{
       console.log("no show")
     }
-    fetchViewMessages()
-}, []);
+        fetchViewInboxMessages()
+  }, []);
   // Open the modal with selected message
   const handleOpenDialog = (message) => {
     setSelectedMessage(message);
@@ -157,7 +160,9 @@ function ViewMessages() {
   }
   // Handle sending the reply (for now, just logging it)
   const handleSendReply = async() => {
+    console.log(selectedMessage)
     console.log('Reply sent:', replyText);
+    
     console.log("file:",file)
     try {
       const fileName = selectedMessage.documentURL.split('/').pop()
@@ -166,10 +171,12 @@ function ViewMessages() {
       const messageObject = {
         message:replyText,
         status:1,
-        createdBy: "USR-a427e4-05-07-2021-01",
-        transactionId:""
+        createdBy: vendorUserId,
+        transactionId:selectedMessage.transactionID
     }
       const response = await createReply(msgId,messageObject,file,fileName,userId)
+
+      
       console.log(response.data)
     } catch (error) {
       console.log(error)
@@ -179,11 +186,9 @@ function ViewMessages() {
   };
 
   return (
+    <>
+    <VendorNavbar/>
     <div className='content'>
-  
-      
-      
-       
       <Box sx={{ minWidth: 275 }} className="card1">
         <Card variant="outlined">
           <CardContent>
@@ -192,8 +197,17 @@ function ViewMessages() {
           
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div className='AllMessageButton'>
-            <Button variant="contained" id="inboxButton" onClick={()=>fetchViewInboxMessages()}>Inbox</Button>
-            <Button variant="contained" id="sentButton" onClick={()=>fetchViewMessages()}>Sent</Button>
+            <Button variant="contained" id="inboxButton" onClick={()=>
+              {
+                fetchViewInboxMessages()
+                setIsInbox(true)
+              }
+              }>Inbox</Button>
+            <Button variant="contained" id="sentButton" onClick={()=>
+              {fetchViewMessages()
+                setIsInbox(false)
+              }
+              }>Sent</Button>
             </div>
             <div
     style={{
@@ -232,7 +246,7 @@ function ViewMessages() {
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Message</TableCell>
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Sent To</TableCell>
                     <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Replies</TableCell>
-                    <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Actions</TableCell>
+                    {isInbox && <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Actions</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -244,7 +258,7 @@ function ViewMessages() {
                       <TableCell
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
-                        onClick={()=>handleCellClick(msg.message)}
+                        onClick={()=>handleCellClick(msg)}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
                       >
                         {msg.sentTo}
@@ -253,23 +267,22 @@ function ViewMessages() {
                         align="left"
                         style={{ color: 'blue', cursor: 'pointer' }}
                         sx={{ fontFamily: 'Poppins, sans-serif' }}
-                        onClick={()=>handleCellClick(msg.message)}
+                        onClick={()=>handleCellClick(msg)}
                       >
                         {msg.replies}
                       </TableCell>
-                      <TableCell align="left">
+                     {isInbox &&  <TableCell align="left">
                         <ViewHeadlineIcon 
                           style={{ cursor: 'pointer' }} 
                           onClick={() => handleOpenDialog(msg)}
                         />
-                      </TableCell>
+                      </TableCell>}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
             <br />
-            Showing 1 to 2 of 2 rows
           </CardContent>
         </Card>
       </Box>
@@ -312,7 +325,7 @@ function ViewMessages() {
         </DialogTitle>
         
         <DialogContent sx={{ minWidth: '600px', fontFamily: 'Poppins, sans-serif' }}>
-          <p><strong>From:</strong> {selectedMessage?.userId}</p>
+          <p><strong>From:</strong> {selectedMessage?.user}</p>
           <p><strong>Message:</strong> {selectedMessage?.message}</p>
          <p><strong>Upload:</strong> 
          
@@ -432,6 +445,7 @@ function ViewMessages() {
         </DialogActions>
       </Dialog>
     </div>
+    </>
   );
 }
 

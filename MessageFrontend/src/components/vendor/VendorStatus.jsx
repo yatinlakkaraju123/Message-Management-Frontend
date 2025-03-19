@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -15,20 +15,62 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import './VendorStatus.css';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { NotificationContext } from '../contexts/NotificationsContext';
+import { retrieveAllRepliesForMessage, readMessage } from '../../apis/messageClients';
+import { vendorUserId } from '../utils/auth';
 function VendorStatus() {
     const navigate = useNavigate();
-    const rows = [
-        { companyName: 'DONGGUAN WEICHENG AUTOMATION', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: '9301 plant', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: 'BACTIVE DIGITAL SOLUTIONS', date: 'NA', status: 'Not Replied', message: 'NA' },
-        { companyName: 'AUTOCOMP', date: 'NA', status: 'Not Replied', message: 'NA' },
-    ];
-
+    const [rows,setRows] = useState([])
     const handleBack = () => {
-        navigate('/view');
+        navigate('/vendorview');
+        
     };
+    const location = useLocation()
+    const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContext)
+ 
+ const {msg} = location.state || "" // Hook for navigation
 
+   const fetchRepliesForMessage = async()=>{
+         try {
+             const response = await retrieveAllRepliesForMessage(msg.messageId)
+             setRows(response.data)
+             console.log(response.data)
+         } catch (error) {
+             console.log(error)
+         }
+     }
+     const Read = async()=>{
+         const response = await readMessage(msg.messageId,vendorUserId)
+         fetchMessageCount()
+         fetchUnReadMessages()
+     }
+     useEffect(()=>{
+         fetchRepliesForMessage()
+         Read()
+         // fetchMessageCount()
+         // fetchUnReadMessages()
+ 
+     },[])
+
+     const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+    
+        // Extract day, month, year, hours, and minutes
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+        const year = date.getFullYear();
+    
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+    
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Adjust for 0 hour in 12-hour format
+    
+        // Combine everything in the desired format
+        return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+      }
     return (
         <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
             <Box sx={{ minWidth: 275, marginBottom: 2 }}>
@@ -40,7 +82,7 @@ function VendorStatus() {
                             multiline
                             rows={6}
                             variant="outlined"
-                            defaultValue="Hi"
+                            defaultValue={msg.message}
                             sx={{ fontFamily: 'Poppins, sans-serif' }}
                         />
                     </CardContent>
@@ -88,8 +130,8 @@ function VendorStatus() {
                             <TableBody>
                                 {rows.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.companyName}</TableCell>
-                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.date}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.createdBy}</TableCell>
+                                        <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{formatDate(row.createdDate)}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.status}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.message}</TableCell>
                                     </TableRow>

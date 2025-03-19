@@ -30,3 +30,14 @@ export const retrieveVendorMessages = async(vendorUserId)=>{
 export const retrieveVendorMessageInboxViews = async(vendorUserId)=>{
     return apiClient.get(`effigo/api/messagemanagement/vendor/messages/view/inbox/${vendorUserId}`)
 }
+
+export const createVendorReply = async(msgId,messageObject,file,fileName,userId)=>{
+    const formData = new FormData()
+    const fileType = file.type || 'application/octet-stream'
+    const blob = new Blob([file],{type:fileType},file.name)
+    formData.append('message', new Blob([JSON.stringify(messageObject)], { type: "application/json" }));
+    formData.append('file',blob)
+    formData.append('filename',fileName)
+    formData.append('userId',userId)
+    return apiClient.post(`/effigo/api/messagemanagement/reply/${msgId}`,formData)
+}

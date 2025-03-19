@@ -12,9 +12,6 @@ export const createReply = async(msgId,messageObject,file,fileName,userId)=>{
     formData.append('filename',fileName)
     formData.append('userId',userId)
     return apiClient.post(`/effigo/api/messagemanagement/reply/${msgId}`,formData)
-
-    
-
 }
 export const submitMessage = async(file,message,suppliers)=>{
     const formData = new FormData()
@@ -83,6 +80,6 @@ export const readMessage = async(messageId,userId)=>{
 }
 
 export const retrieveAllRepliesForMessage = async(messageId)=>{
-    return apiClient.get(`/effigo/api/messagemanagement/client/replyView/${messageId}`)
+    return apiClient.get(`/effigo/api/messagemanagement/vendor/replyView/${messageId}`)
 }
 
