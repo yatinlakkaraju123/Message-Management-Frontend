@@ -19,6 +19,7 @@ const NotificationsContextProvider = ({children})=> {
               try {
                 const response = await getUnreadMessageCount(userId);
                 setMessageCount(response.data);
+                console.log("count:",response.data)
               } catch (error) {
                 console.log(error);
               }
