@@ -87,7 +87,8 @@ function ViewMessages() {
   const handleCellClick = (message) => {
     navigate('/vendorstatus',{
       state:{
-        msg:message
+        msg:message,
+        toRender:isInbox
       }
     });
   };

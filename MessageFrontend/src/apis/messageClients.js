@@ -80,6 +80,6 @@ export const readMessage = async(messageId,userId)=>{
 }
 
 export const retrieveAllRepliesForMessage = async(messageId)=>{
-    return apiClient.get(`/effigo/api/messagemanagement/vendor/replyView/${messageId}`)
+    return apiClient.get(`/effigo/api/messagemanagement/client/replyView/${messageId}`)
 }
 

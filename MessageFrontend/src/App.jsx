@@ -14,10 +14,12 @@ import ClientHome from './components/client/ClientHome';
 import MessageStatus from './components/client/MessageStatus';
 import UnReadMessages from './components/client/UnReadMessages';
 import NotificationsContextProvider from './components/contexts/NotificationsContext';
+import NotificationsContextVendorProvider from './components/contexts/NotificationContextVendor';
 function App() {
   return (
     <>
 <NotificationsContextProvider>
+  <NotificationsContextVendorProvider>
   <ToastContainer />
 <Routes>
 <Route path='/ClientHome' element={<ClientHome />}></Route>
@@ -29,6 +31,7 @@ function App() {
       <Route path='/vendorview' element={<VendorView/>}/>
 
 </Routes>
+</NotificationsContextVendorProvider>
 </NotificationsContextProvider>
     </>
   )

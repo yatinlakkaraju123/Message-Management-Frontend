@@ -41,3 +41,9 @@ export const createVendorReply = async(msgId,messageObject,file,fileName,userId)
     formData.append('userId',userId)
     return apiClient.post(`/effigo/api/messagemanagement/reply/${msgId}`,formData)
 }
+export const retrieveAllRepliesForMessageVendor = async(messageId)=>{
+    return apiClient.get(`/effigo/api/messagemanagement/vendor/replyView/${messageId}`)
+}
+export const getUnReadMessagesVendor = async(userId)=>{
+    return apiClient.get(`/effigo/api/messagemanagement/vendor/unreadMessages/user/${userId}`)
+}

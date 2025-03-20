@@ -16,8 +16,11 @@ import TextField from '@mui/material/TextField';
 import './VendorStatus.css';
 import SearchIcon from '@mui/icons-material/Search';
 import { NotificationContext } from '../contexts/NotificationsContext';
-import { retrieveAllRepliesForMessage, readMessage } from '../../apis/messageClients';
+import {  readMessage } from '../../apis/messageClients';
 import { vendorUserId } from '../utils/auth';
+import { retrieveAllRepliesForMessageVendor } from '../../apis/vendorApiImpl';
+import VendorNavbar from './VendorNavbar';
+import {NotificationContextVendor} from '../contexts/NotificationContextVendor';
 function VendorStatus() {
     const navigate = useNavigate();
     const [rows,setRows] = useState([])
@@ -26,13 +29,13 @@ function VendorStatus() {
         
     };
     const location = useLocation()
-    const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContext)
+    const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContextVendor)
  
- const {msg} = location.state || "" // Hook for navigation
-
+ const msg = location.state.msg || "" // Hook for navigation
+const toRender = location.state.toRender
    const fetchRepliesForMessage = async()=>{
          try {
-             const response = await retrieveAllRepliesForMessage(msg.messageId)
+             const response = await retrieveAllRepliesForMessageVendor(msg.messageId)
              setRows(response.data)
              console.log(response.data)
          } catch (error) {
@@ -72,7 +75,10 @@ function VendorStatus() {
         return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
       }
     return (
+       <>
+         <VendorNavbar/>
         <div className='content' style={{ fontFamily: 'Poppins, sans-serif' }}>
+           
             <Box sx={{ minWidth: 275, marginBottom: 2 }}>
                 <Card variant="outlined">
                     <CardContent>
@@ -128,7 +134,7 @@ function VendorStatus() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row, index) => (
+                                {toRender && rows.map((row, index) => (
                                     <TableRow key={index}>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{row.createdBy}</TableCell>
                                         <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{formatDate(row.createdDate)}</TableCell>
@@ -171,6 +177,7 @@ function VendorStatus() {
         </Button>
       </div>
         </div>
+        </>
     );
 }
 

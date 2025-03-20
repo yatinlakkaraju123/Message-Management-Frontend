@@ -17,9 +17,10 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MessageIcon from "@mui/icons-material/Message";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { NotificationContext } from "../contexts/NotificationsContext";
 import VendorBarSide from "./VendorSideBar";
+import { useNavigate } from "react-router-dom";
+
+import { NotificationContextVendor } from "../contexts/NotificationContextVendor";
 export default function VendorNavbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openSidebar, setOpenSidebar] = React.useState(false);
@@ -30,7 +31,7 @@ export default function VendorNavbar() {
   ]);
       const navigate = useNavigate();
 
-   const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContext)
+   const {messageCount,fetchMessageCount,messages,fetchUnReadMessages} = React.useContext(NotificationContextVendor)
     const formatDate = (isoDate) => {
         const date = new Date(isoDate);
     
@@ -50,20 +51,12 @@ export default function VendorNavbar() {
         // Combine everything in the desired format
         return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
       }
-      // const fetchUnReadMessages = async()=>{
-      //       try {
-      //           const response = await getUnReadMessages(userId)
-      //           // console.log(response.data)
-      //           setMessages(response.data)
-      //       } catch (error) {
-      //           console.log(error)
-      //       }
-      // }
+
      
       const read = async(message)=>{
         console.log(message)
             try{
-              navigate('/status',{
+              navigate('/vendorstatus',{
                 state:{
                   msg:message
                 }
@@ -83,15 +76,6 @@ export default function VendorNavbar() {
     setAnchorEl(null);
   };
 
-  // // Fetch unread messages count
-  // const fetchMessageCount = async () => {
-  //   try {
-  //     const response = await getUnreadMessageCount(userId);
-  //     setMessageCount(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   React.useEffect(() => {
      fetchMessageCount();
@@ -121,7 +105,7 @@ export default function VendorNavbar() {
           </IconButton>
 
           {/* Message Icon */}
-          <Link to="/view">
+          <Link to="/vendorview">
             <IconButton size="large" aria-label="messages" sx={{ color: "black" }}>
               <MessageIcon />
             </IconButton>

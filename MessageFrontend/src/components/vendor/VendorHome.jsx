@@ -165,11 +165,7 @@ const handleFileChange = (event) => {
 
   const card = (
     <CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-      <div className="AllMessageButton">
-        <Button variant="contained" onClick={() => navigate('/vendorview')}>
-          All Messages
-        </Button>
-      </div>
+    
 
       <Typography variant="subtitle1" className="small-title" sx={{ marginBottom: 1 }}>
         Message
@@ -258,6 +254,10 @@ const handleFileChange = (event) => {
           </Button>
         </Box>
       </Box>
+      <Typography variant="h6" className='title' >
+        Choose Vendors
+      </Typography>
+      
 
       <Typography variant="subtitle2" className="small-title" sx={{ marginTop: 2 }}>
         Module
