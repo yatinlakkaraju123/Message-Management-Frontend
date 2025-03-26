@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ClientNavbar from './ClientNavbar';
+import TablePagination from '@mui/material/TablePagination';
 
 import Table from '@mui/material/Table';
 import { Typography } from '@mui/material';
@@ -20,7 +21,7 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { Link, useNavigate } from 'react-router-dom';
 import { modules } from '../utils/ClientModules';
-import { retrieveAllCategories, retrieveBusinessUnits, retrieveProjects, retrieveSuppliers, retrieveTransactionIds, submitMessage } from '../../apis/messageClients';
+import { retrieveAllCategories, retrieveAllSuppliersByPagination, retrieveBusinessUnits, retrieveProjects, retrieveSuppliers, retrieveSuppliersByTransactionIdWithPagination, retrieveTransactionIds, submitMessage } from '../../apis/messageClients';
 import { ClipLoader } from 'react-spinners';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -53,6 +54,35 @@ function ClientHome() {
   const [projects,setProjects] = useState([])
   const [file,setFile] = useState(null)
   const [isLoading,setIsLoading] = useState(false)
+  const [page,setPage] = useState(0)
+  const [rowsPerPage,setRowsPerPage] = useState(10)
+  const [totalCount,setTotalCount] = useState(0)
+  const [totalPages,setTotalPages] = useState(0)
+  const [sortField, setSortField] = useState("mu.user_name"); // Example field
+  const [sortAsc, setSortAsc] = useState("asc");
+  const [searchClicked,setSearchClicked] = useState(false)
+  const [allSuppliers,setAllSuppliers] = useState(false)
+  useEffect(() => {
+    if(selectedModule=='Suppliers' && searchClicked && allSuppliers ){
+      fetchAllSuppliersByPagination();
+    }
+    else{
+      fetchSuppliersWithTransactionIdByPagination()
+    }
+
+  }, [rowsPerPage, page,selectedModule,searchClicked]);
+  const handleChangePage = (event, newPage) => {
+    
+    setPage(newPage);
+
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    console.log("changing number of rows:",event.target.value)
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+
+  };
   const fetchCategories = async ()=>{
       try {
         const response = await retrieveAllCategories()
@@ -95,9 +125,32 @@ function ClientHome() {
   }
   useEffect(()=>{
     fetchBusinessUnits()
-  },[])
-  
+    if(selectedModule=='Suppliers'){
+      fetchAllSuppliersByPagination();
 
+    }
+  },[])
+  useEffect(()=>{
+    console.log("suppliers:",suppliers)
+  },[suppliers])
+  const fetchSuppliersWithTransactionIdByPagination = async()=>{
+    const response = await retrieveSuppliersByTransactionIdWithPagination(transactionId,page,rowsPerPage,sortField,sortAsc)
+    setSuppliers(response.data.content)
+
+  setTotalCount(response.data.totalElements)
+  setTotalPages(response.data.totalPages)
+  setSelectedRows([])
+  setSelectAll(false)
+  }
+const fetchAllSuppliersByPagination = async()=>{
+  const response = await retrieveAllSuppliersByPagination(page,rowsPerPage,sortField,sortAsc)
+  setSuppliers(response.data.content)
+
+  setTotalCount(response.data.totalElements)
+  setTotalPages(response.data.totalPages)
+  setSelectedRows([])
+  setSelectAll(false)
+}
   // Enforce 200-char limit for message
   const handleChange = (e) => {
     if (e.target.value.length <= 200) {
@@ -132,6 +185,10 @@ function ClientHome() {
   };
   const handleModuleChange = (event)=>{
     const selectedModule = event.target.value;
+    console.log(selectedModule)
+    if(selectedModule=='Suppliers'){
+
+    }
     if(selectedModule!=""){
       fetchTransactionIds()
       setModule(selectedModule)
@@ -163,16 +220,23 @@ function ClientHome() {
     }
   };
   const search = async(e)=>{
+
     e.preventDefault();
-    try {
-      const response = await retrieveSuppliers(transactionId)
-      setSelectedRows([])
-      setSelectAll(false)
-      setSuppliers(response.data)
-      console.log(response.data)
-    } catch (error) {
-      console.log(error)
+    setSearchClicked(true)
+
+    if(selectedModule=='Suppliers'){
+      setAllSuppliers(true)
+      fetchAllSuppliersByPagination()
     }
+    else{
+      setAllSuppliers(false)
+      try {
+        fetchSuppliersWithTransactionIdByPagination()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    
   }
   const submit = async(e)=>{
     e.preventDefault();
@@ -190,7 +254,7 @@ function ClientHome() {
       // console.log(messageObject)
       // setSelectedRows(['USR-a427e4-05-07-2021-01'])
       // console.log("suppliers:",selectedRows)
-    //   setIsLoading(true)
+      setIsLoading(true)
     // console.log(file)
       const response = await submitMessage(file,messageObject,selectedRows)
       setIsLoading(false)
@@ -416,7 +480,7 @@ function ClientHome() {
       </Select>
 
       <div className='AllMessageButton' style={{ marginTop: '16px' }}>
-        <Button variant="contained" onClick={search} disabled={transactionId===""}>Search</Button>
+        <Button variant="contained" onClick={search} disabled={transactionId==="" && selectedModule!="Suppliers"}>Search</Button>
       </div>
     </CardContent>
     
@@ -456,6 +520,7 @@ function ClientHome() {
   }} checked={selectAll} onChange={handleSelectAll} />
                 Select All
               </TableCell >
+
               <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Supplier Company</TableCell>
               <TableCell align="left"className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Supplier Name</TableCell>
               <TableCell align="left" className='small-title' sx={{ fontFamily: 'Poppins, sans-serif' }}>Email Id</TableCell>
@@ -463,8 +528,9 @@ function ClientHome() {
             </TableRow>
           </TableHead>
           <TableBody>
+      
             {suppliers.map((supplier,index) => (
-              <TableRow key={supplier.user_id}>
+              <TableRow key={`${supplier.user_id}-${supplier.lot_id}-${index}`}>
                 <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>
                   <Checkbox sx={{
     color: '#012954',
@@ -476,12 +542,22 @@ function ClientHome() {
                     onChange={() => handleRowSelect(supplier.user_id)}
                   />
                 </TableCell>
-                <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.company_name}</TableCell>
+
+              <TableCell align="left"  sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.company_name}</TableCell>
                 <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.first_name}</TableCell>
                 <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>{supplier.user_name}</TableCell>
                 <TableCell align="left" sx={{ fontFamily: 'Poppins, sans-serif' }}>XXX</TableCell>
               </TableRow>
-            ))}
+            ))
+            
+            }
+                      <TablePagination
+      count={totalCount}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
           </TableBody>
         </Table>
       </TableContainer>
