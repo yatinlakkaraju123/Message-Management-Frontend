@@ -6,6 +6,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import {  Snackbar, Alert } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import TablePagination from '@mui/material/TablePagination';
+import { userId } from '../utils/auth';
 import {
   Box,
   Card,
@@ -27,13 +29,51 @@ import {
 } from '@mui/material';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import './ViewMessages.css';
-import { createReply, downloadFile, retrieveMessageInboxViews, retrieveMessagesViews, updateFile } from '../../apis/messageClients';
+import { createReply, downloadFile, retrieveMessageInboxViews, retrieveMessageInboxViewsWithPagination, retrieveMessagesViews, retrieveMessageViewsWithPagination, updateFile } from '../../apis/messageClients';
 import { useRef } from 'react';
 import ClientNavbar from './ClientNavbar';
 function ViewMessages() {
   const location = useLocation()
   const navigate = useNavigate();
   const [openPopup, setOpenPopUp] = useState(false);
+  const [page,setPage] = useState(0)
+    const [rowsPerPage,setRowsPerPage] = useState(10)
+    const [totalCount,setTotalCount] = useState(0)
+    const [totalPages,setTotalPages] = useState(0)
+    const [sortField, setSortField] = useState("message_id"); // Example field
+    const [sortAsc, setSortAsc] = useState("asc");
+    const handleChangePage = (event, newPage) => {
+    
+      setPage(newPage);
+  
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      console.log("changing number of rows:",event.target.value)
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  
+    };
+    const fetchViewInboxMessagesByPagination = async()=>{
+      try {
+        const response = await retrieveMessageInboxViewsWithPagination(userId,page,rowsPerPage,sortField,sortAsc)
+        setMessages(response.data.content)
+        setTotalCount(response.data.totalElements)
+        setTotalPages(response.data.totalPages)
+        } catch (error) {
+        console.log(error)
+      }
+    }
+    const fetchViewMessagesByPagination = async()=>{
+      try {
+        const response = await retrieveMessageViewsWithPagination(userId,page,rowsPerPage,sortField,sortAsc)
+        setMessages(response.data.content)
+        setTotalCount(response.data.totalElements)
+        setTotalPages(response.data.totalPages)
+        } catch (error) {
+        console.log(error)
+      }
+    }
     const fileInputRef = useRef(null);
     const handleUploadClick = () => {
       console.log("clicked upload")
@@ -112,8 +152,16 @@ function ViewMessages() {
     else{
       console.log("no show")
     }
-    fetchViewInboxMessages()
+    fetchViewInboxMessagesByPagination()
   }, []);
+  useEffect(()=>{
+      if(isInbox){
+        fetchViewInboxMessagesByPagination()
+      }
+      else{
+        fetchViewMessagesByPagination()
+      }
+  },[rowsPerPage,page,isInbox])
   // Open the modal with selected message
   const handleOpenDialog = (message) => {
     setSelectedMessage(message);
@@ -197,12 +245,12 @@ function ViewMessages() {
             <div className='AllMessageButton'>
             <Button variant="contained" id="inboxButton" onClick={()=>
               {
-                fetchViewInboxMessages()
+                fetchViewInboxMessagesByPagination()
                 setIsInbox(true)
               }
               }>Inbox</Button>
             <Button variant="contained" id="sentButton" onClick={()=>
-              {fetchViewMessages()
+              {fetchViewMessagesByPagination()
                 setIsInbox(false)
               }
               }>Sent</Button>
@@ -277,6 +325,13 @@ function ViewMessages() {
                       </TableCell>}
                     </TableRow>
                   ))}
+                                  <TablePagination
+      count={totalCount}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
                 </TableBody>
               </Table>
             </TableContainer>

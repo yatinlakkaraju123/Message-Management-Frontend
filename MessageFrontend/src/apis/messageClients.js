@@ -89,7 +89,13 @@ export const retrieveAllSuppliersByPagination = async(offSet,pageSize,field,asc)
 
 export const retrieveSuppliersByTransactionIdWithPagination = async(tid,offSet,pageSize,field,asc)=>{
     return apiClient.get(`/effigo/api/messagemanagement/client/suppliers/transactionId/${tid}/offset/${offSet}/pageSize/${pageSize}/field/${field}/IsSortAsc/${asc}`)
-
-
 }
+
+export const retrieveMessageInboxViewsWithPagination = async(userId,offSet,pageSize,field,asc)=>{
+    return apiClient.get(`/effigo/api/messagemanagement/messages/view/inbox/${userId}/offset/${offSet}/pageSize/${pageSize}/field/${field}/IsSortAsc/${asc}`)
+}
+export const retrieveMessageViewsWithPagination = async(userId,offSet,pageSize,field,asc)=>{
+    return apiClient.get(`/effigo/api/messagemanagement/messages/view/${userId}/offset/${offSet}/pageSize/${pageSize}/field/${field}/IsSortAsc/${asc}`)
+}
+
 

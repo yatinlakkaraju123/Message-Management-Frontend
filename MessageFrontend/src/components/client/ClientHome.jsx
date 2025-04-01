@@ -130,9 +130,7 @@ function ClientHome() {
 
     }
   },[])
-  useEffect(()=>{
-    console.log("suppliers:",suppliers)
-  },[suppliers])
+ 
   const fetchSuppliersWithTransactionIdByPagination = async()=>{
     const response = await retrieveSuppliersByTransactionIdWithPagination(transactionId,page,rowsPerPage,sortField,sortAsc)
     setSuppliers(response.data.content)
@@ -255,7 +253,7 @@ const fetchAllSuppliersByPagination = async()=>{
       // setSelectedRows(['USR-a427e4-05-07-2021-01'])
       // console.log("suppliers:",selectedRows)
       setIsLoading(true)
-    // console.log(file)
+    // // console.log(file)
       const response = await submitMessage(file,messageObject,selectedRows)
       setIsLoading(false)
       setSelectedRows([])
@@ -275,7 +273,14 @@ const fetchAllSuppliersByPagination = async()=>{
   const isFormValid = () => {
     // Check if all fields are filled
     // return true;
-    return file !== null && text.trim() !== '' && selectedRows.length>0 && transactionId.trim()!== '';
+    if(selectedModule!=='Suppliers'){
+      return file !== null && text.trim() !== '' && selectedRows.length>0 && transactionId.trim()!== '';
+
+    }
+    else{
+      return file !== null && text.trim() !== '' && selectedRows.length>0;
+
+    }
   };
 
 
@@ -455,6 +460,7 @@ const fetchAllSuppliersByPagination = async()=>{
           </MenuItem>
         ))} */}
      {/* </Select> */}
+     {selectedModule!='Suppliers' && <>
       <Typography variant="subtitle2" className='small-title' sx={{ marginTop: 2 }}>
         Transaction ID
       </Typography>
@@ -478,6 +484,8 @@ const fetchAllSuppliersByPagination = async()=>{
         )}
         
       </Select>
+     </>}
+      
 
       <div className='AllMessageButton' style={{ marginTop: '16px' }}>
         <Button variant="contained" onClick={search} disabled={transactionId==="" && selectedModule!="Suppliers"}>Search</Button>

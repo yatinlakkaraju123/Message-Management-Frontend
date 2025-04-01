@@ -15,9 +15,14 @@ import MessageStatus from './components/client/MessageStatus';
 import UnReadMessages from './components/client/UnReadMessages';
 import NotificationsContextProvider from './components/contexts/NotificationsContext';
 import NotificationsContextVendorProvider from './components/contexts/NotificationContextVendor';
+import AuthProvider from './security/Auth';
+import { useEffect } from 'react';
+import { useAuth } from './security/Auth';
 function App() {
+  
   return (
     <>
+    <AuthProvider>
 <NotificationsContextProvider>
   <NotificationsContextVendorProvider>
   <ToastContainer />
@@ -33,6 +38,7 @@ function App() {
 </Routes>
 </NotificationsContextVendorProvider>
 </NotificationsContextProvider>
+</AuthProvider>
     </>
   )
 }
